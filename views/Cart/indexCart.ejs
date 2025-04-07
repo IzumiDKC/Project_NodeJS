@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Giỏ hàng của bạn</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .total {
+      font-weight: bold;
+      text-align: right;
+      margin-top: 20px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #888;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Giỏ hàng của bạn</h1>
+
+  <% if (cartItems.length === 0) { %>
+    <p class="empty">Giỏ hàng trống</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Sản phẩm</th>
+          <th>Hình ảnh</th>
+          <th>Số lượng</th>
+          <th>Giá</th>
+          <th>Thành tiền</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% cartItems.forEach(item => { %>
+          <tr>
+            <td><%= item.product.name %></td>
+            <td><img src="<%= item.product.urlImg %>" alt="" width="80"></td>
+            <td><%= item.quantity %></td>
+            <td><%= item.product.price %>₫</td>
+            <td><%= item.product.price * item.quantity %>₫</td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <p class="total">Tổng cộng: <%= total %>₫</p>
+  <% } %>
+
+</body>
+</html>

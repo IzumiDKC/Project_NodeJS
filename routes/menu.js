@@ -1,19 +1,17 @@
 const express = require('express');
-const router = express.Router();  // Khai báo router
-const Menu = require('../schemas/menu'); // Đảm bảo đã import model Menu
+const router = express.Router(); 
+const Menu = require('../schemas/menu');
 
-// Endpoint để lấy menu
 router.get('/', async (req, res) => {
     try {
-        let menus = await Menu.find();  // Lấy dữ liệu từ menu collection
-        let menuTree = buildMenuTree(menus);  // Tạo cấu trúc cây
-        res.json(menuTree);  // Trả về kết quả dạng JSON
+        let menus = await Menu.find(); 
+        let menuTree = buildMenuTree(menus);  
+        res.json(menuTree); 
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-// Hàm để xây dựng cây menu
 function buildMenuTree(menus, parentId = null) {
     return menus
         .filter(menu => String(menu.parent) === String(parentId))
@@ -24,17 +22,14 @@ function buildMenuTree(menus, parentId = null) {
         }));
 }
 
-// Route hiển thị view
 router.get('/view', async (req, res) => {
     try {
-        let menus = await Menu.find();  // Lấy từ MongoDB
-        let menuTree = buildMenuTree(menus);  // Tạo cây
-        res.render('menu', { menu: menuTree });  // Gửi qua EJS view
+        let menus = await Menu.find();  
+        let menuTree = buildMenuTree(menus);  
+        res.render('menu', { menu: menuTree });  
     } catch (err) {
         res.status(500).send('Lỗi khi hiển thị menu');
     }
 });
 
-
-// Xuất router để sử dụng trong app.js
 module.exports = router;

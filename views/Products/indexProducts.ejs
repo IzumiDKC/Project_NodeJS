@@ -79,6 +79,8 @@
   </style>
 </head>
 <body>
+  <%- include('../partials/header') %>
+
   <h1>Danh sách sản phẩm</h1>
 
   <div class="product-grid">
@@ -96,6 +98,9 @@
           <button onclick="if(confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) { window.location.href='/delete/<%= product.id %>' }">Xóa</button>
           
           <button onclick="window.location.href='/product/<%= product.id %>'">Chi tiết</button>
+          <form action="/cart/add/<%= product._id %>" method="POST" style="margin-top:10px;">
+            <button type="submit">Thêm vào giỏ</button>
+          </form>
         </div>
       </div>
     <% }) %>
@@ -103,7 +108,10 @@
 
   <div>
     <a href="/products/view/create">Thêm sản phẩm mới</a>
+    <a href="/cart/view">Giỏ hàng</a>
   </div>
 
+  
+  <%- include('../partials/footer') %>
 </body>
 </html>

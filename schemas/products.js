@@ -12,7 +12,6 @@ let productSchema = mongoose.Schema({
     isDeleted: { type: Boolean, default: false }
 }, { timestamps: true });
 
-// Tạo slug trước khi lưu
 productSchema.pre('save', function(next) {
     if (this.name) {
         this.slug = slugify(this.name, { lower: true, strict: true });
@@ -21,4 +20,3 @@ productSchema.pre('save', function(next) {
 });
 
 module.exports = mongoose.model('product', productSchema);
-// module.exports = mongoose.model('product', productSchema);

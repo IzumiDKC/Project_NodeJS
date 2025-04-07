@@ -17,7 +17,7 @@ router.get('/', async function(req, res, next) {
 router.get('/view/all', async function(req, res, next) {
   try {
     let products = await productModel.find({ isDeleted: false }).populate('category');
-    res.render('indexProducts', { products });  
+    res.render('Products/indexProducts', { products });  
   } catch (error) {
     next(error);
   }
@@ -25,7 +25,7 @@ router.get('/view/all', async function(req, res, next) {
 router.get('/view/create', async (req, res, next) => {
   try {
     const categories = await categoryModel.find({});
-    res.render('createProduct', { categories });
+    res.render('Products/createProduct', { categories });
   } catch (error) {
     next(error);
   }
@@ -38,7 +38,7 @@ router.get('/view/edit/:id', async function(req, res, next) {
       return res.status(404).send("Product not found");
     }
     let categories = await categoryModel.find();
-    res.render('editProduct', { product, categories });
+    res.render('Products/editProduct', { product, categories });
   } catch (error) {
     next(error);
   }
