@@ -10,7 +10,6 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const menuRouter = require('./routes/menu');
 
-
 var app = express();
 
 const cors = require('cors'); 
@@ -18,10 +17,12 @@ app.use(cors({ origin: "http://localhost:3000" }));
 
 mongoose.connect("mongodb://localhost:27017/S5");
 mongoose.connection.on('connected',()=>{
-  console.log("connected");
+  console.log("Database connected");
 })
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'pug');
+var methodOverride = require('method-override');
+app.use(methodOverride('_method'));  // Giả lập PUT, DELETE
 
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
@@ -40,9 +41,6 @@ app.use('/roles', require('./routes/roles'));
 app.use('/auth', require('./routes/auth'));
 app.use('/products', require('./routes/products'));
 app.use('/categories', require('./routes/categories'));
-app.use('/orders', require('./routes/orders'));
-app.use('/users', require('./routes/users'));
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -58,7 +56,8 @@ app.use(function(err, req, res, next) {
 });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server đang hoạt động ở cổng http://localhost:${PORT}`);
+  console.log(`Thằng này là main http://localhost:${PORT}/Products/view/all`);
 });
 
 module.exports = app;
