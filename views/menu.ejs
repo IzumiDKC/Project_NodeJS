@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu Tree</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    ul.tree {
+      list-style: none;
+      padding-left: 0;
+      max-width: 600px;
+    }
+
+    ul.tree li {
+      position: relative;
+      padding: 8px 12px;
+      background: #fff;
+      margin: 5px 0;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    ul.tree li a {
+      text-decoration: none;
+      color: #007BFF;
+      font-weight: bold;
+    }
+
+    ul.tree li a:hover {
+      text-decoration: underline;
+    }
+
+    ul.tree li ul {
+      display: none;
+      margin-top: 5px;
+      padding-left: 20px;
+    }
+
+    ul.tree li.open > ul {
+      display: block;
+    }
+
+    .toggle-btn {
+      cursor: pointer;
+      color: #555;
+      margin-right: 8px;
+      font-size: 14px;
+    }
+
+    .has-children > .toggle-btn::before {
+      content: "▶";
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+
+    .open > .toggle-btn::before {
+      transform: rotate(90deg);
+    }
+  </style>
+</head>
+<body>
+  <h1>Menu</h1>
+  <ul class="tree">
+    <% function renderTree(items) { %>
+      <% items.forEach(item => { %>
+        <li class="<%= item.children && item.children.length > 0 ? 'has-children' : '' %>">
+          <% if (item.children && item.children.length > 0) { %>
+            <span class="toggle-btn"></span>
+          <% } %>
+          <a href="<%= item.url %>"><%= item.text %></a>
+          <% if (item.children && item.children.length > 0) { %>
+            <ul>
+              <% renderTree(item.children); %>
+            </ul>
+          <% } %>
+        </li>
+      <% }) %>
+    <% } %>
+    <% renderTree(menu); %>
+  </ul>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.has-children > .toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.parentElement.classList.toggle('open');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

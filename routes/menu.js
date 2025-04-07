@@ -24,5 +24,17 @@ function buildMenuTree(menus, parentId = null) {
         }));
 }
 
+// Route hiển thị view
+router.get('/view', async (req, res) => {
+    try {
+        let menus = await Menu.find();  // Lấy từ MongoDB
+        let menuTree = buildMenuTree(menus);  // Tạo cây
+        res.render('menu', { menu: menuTree });  // Gửi qua EJS view
+    } catch (err) {
+        res.status(500).send('Lỗi khi hiển thị menu');
+    }
+});
+
+
 // Xuất router để sử dụng trong app.js
 module.exports = router;

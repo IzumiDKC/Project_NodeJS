@@ -20,9 +20,13 @@ mongoose.connect("mongodb://localhost:27017/S5");
 mongoose.connection.on('connected',()=>{
   console.log("connected");
 })
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'pug');
 
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
+
+app.use(express.static('public')); 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -36,6 +40,7 @@ app.use('/auth', require('./routes/auth'));
 app.use('/products', require('./routes/products'));
 app.use('/categories', require('./routes/categories'));
 app.use('/menu', menuRouter); 
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
