@@ -12,6 +12,25 @@ router.get('/', async function(req, res, next) {
   }).populate("category")
   CreateSuccessRes(res,products,200);
 });
+
+router.get('/view/all', async function(req, res, next) {
+  try {
+    let products = await productModel.find({ isDeleted: false }).populate('category');
+    res.render('indexProducts', { products });  
+  } catch (error) {
+    next(error);
+  }
+});
+router.get('/view/create', async (req, res, next) => {
+  try {
+    const categories = await categoryModel.find({});
+    res.render('createProduct', { categories });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 router.get('/:id', async function(req, res, next) {
   try {
     let product = await productModel.findOne({
@@ -25,26 +44,34 @@ router.get('/:id', async function(req, res, next) {
 });
 router.post('/', async function(req, res, next) {
   try {
-    let body = req.body
+    let body = req.body;
+
+    // Tìm category theo name (do form gửi tên category)
     let category = await categoryModel.findOne({
-      name:body.category
-    })
-    if(category){
+      name: body.category
+    });
+
+    if (category) {
       let newProduct = new productModel({
-        name:body.name,
-        price:body.price,
-        quantity:body.quantity,
-        category:category._id
-      })
+        name: body.name,
+        price: body.price,
+        quantity: body.quantity,
+        category: category._id,
+        urlImg: body.urlImg || "",           
+        description: body.description || ""  
+      });
+
       await newProduct.save();
-      CreateSuccessRes(res,newProduct,200);
-    }else{
-      throw new Error("cate khong ton tai")
-    } 
+
+      res.redirect('/products/view/all');
+    } else {
+      throw new Error("Danh mục không tồn tại");
+    }
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
+
 router.put('/:id', async function(req, res, next) {
   let id = req.params.id;
   try {
@@ -70,6 +97,8 @@ router.put('/:id', async function(req, res, next) {
     next(error)
   }
 });
+
+
 router.delete('/:id', async function(req, res, next) {
   let id = req.params.id;
   try {

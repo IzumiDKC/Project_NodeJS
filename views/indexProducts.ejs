@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách sản phẩm</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product-card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background-color: #eee;
+    }
+
+    .product-content {
+      padding: 15px;
+    }
+
+    .product-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0 0 10px 0;
+      color: #333;
+    }
+
+    .product-description {
+      font-size: 14px;
+      color: #666;
+      height: 50px;
+      overflow: hidden;
+    }
+
+    .product-price {
+      margin-top: 10px;
+      color: #007bff;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .product-quantity {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .product-category {
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <h1>Danh sách sản phẩm</h1>
+
+  <div class="product-grid">
+    <% products.forEach(product => { %>
+      <div class="product-card">
+        <img src="<%= product.urlImg || 'https://via.placeholder.com/300x200?text=No+Image' %>" alt="<%= product.name %>" class="product-image">
+        <div class="product-content">
+          <div class="product-title"><%= product.name %></div>
+          <div class="product-description"><%= product.description %></div>
+          <div class="product-price">Giá: <%= product.price %>₫</div>
+          <div class="product-quantity">Số lượng: <%= product.quantity %></div>
+          <div class="product-category">Danh mục: <%= product.category?.name || 'Không rõ' %></div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</body>
+</html>

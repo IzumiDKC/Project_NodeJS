@@ -35,11 +35,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/menu', menuRouter); 
 app.use('/roles', require('./routes/roles'));
 app.use('/auth', require('./routes/auth'));
 app.use('/products', require('./routes/products'));
 app.use('/categories', require('./routes/categories'));
-app.use('/menu', menuRouter); 
+app.use('/orders', require('./routes/orders'));
+app.use('/users', require('./routes/users'));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
