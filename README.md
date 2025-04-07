@@ -1,3 +1,4 @@
 # Project_NodeJS
 
-**npm install ejs**
+**npm i ejs**
+
