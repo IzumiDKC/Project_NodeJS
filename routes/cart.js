@@ -49,6 +49,32 @@ router.get('/view', async (req, res) => {
     }
   });
   
-
-
+  router.get('/remove/:productId', async (req, res) => {
+    try {
+      const userId = req.user?._id || '660000000000000000000000';
+      const productId = req.params.productId;
+  
+      const cart = await Cart.findOne({ user: userId });
+  
+      if (!cart) return res.redirect('/cart/view');
+  
+      cart.items = cart.items.filter(item => item.product.toString() !== productId);
+  
+      await cart.save();
+      res.redirect('/cart/view');
+    } catch (err) {
+      res.status(500).send("Lỗi khi xoá sản phẩm");
+    }
+  });
+  
+  router.get('/clear', async (req, res) => {
+    try {
+      const userId = req.user?._id || '660000000000000000000000';
+      await Cart.findOneAndDelete({ user: userId });
+      res.redirect('/cart/view');
+    } catch (err) {
+      res.status(500).send("Lỗi khi xoá giỏ hàng");
+    }
+  });
+  
 module.exports = router;

@@ -47,6 +47,7 @@
   </style>
 </head>
 <body>
+  <%- include('../partials/header') %>
 
   <h1>Giỏ hàng của bạn</h1>
 
@@ -71,13 +72,19 @@
             <td><%= item.quantity %></td>
             <td><%= item.product.price %>₫</td>
             <td><%= item.product.price * item.quantity %>₫</td>
+            <td><a href="/cart/remove/<%= item.product._id %>" onclick="return confirm('Xoá sản phẩm này khỏi giỏ?')">❌ Xoá</a></td>
           </tr>
         <% }) %>
       </tbody>
     </table>
+<a href="/cart/clear" onclick="return confirm('Xoá toàn bộ giỏ hàng?')">🗑️ Xoá toàn bộ giỏ hàng</a>
 
     <p class="total">Tổng cộng: <%= total %>₫</p>
   <% } %>
 
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="/products/view/all">Quay lại danh sách sản phẩm</a>
+    <a href="/checkout" style="margin-left: 20px;">Thanh toán</a>
+  <%- include('../partials/footer') %>
 </body>
 </html>
