@@ -76,6 +76,11 @@
       font-size: 13px;
       color: #999;
     }
+
+    .product-brand {
+      font-size: 13px;
+      color: #999;
+    }
   </style>
 </head>
 <body>
@@ -93,6 +98,7 @@
           <div class="product-price">Giá: <%= product.price %>₫</div>
           <div class="product-quantity">Số lượng: <%= product.quantity %></div>
           <div class="product-category">Danh mục: <%= product.category?.name || 'Không rõ' %></div>
+          <div class="product-brand">Thương hiệu: <%= product.brand?.name || 'Không rõ' %></div>
           
           <button onclick="window.location.href='/products/view/edit/<%= product.id %>'">Sửa</button>
           <button onclick="if(confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) { window.location.href='/delete/<%= product.id %>' }">Xóa</button>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách thương hiệu</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f9f9fc;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .brand-container {
+            width: 85%;
+            margin: 30px auto;
+        }
+
+        .title {
+            background-color: #6C63FF;
+            color: white;
+            padding: 16px;
+            border-radius: 10px 10px 0 0;
+            margin: 0;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .add-brand-btn {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 22px;
+            background-color: #6C63FF;
+            color: white;
+            font-size: 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+
+        .add-brand-btn:hover {
+            background-color: #574fd6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 0 0 10px 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        th {
+            background-color: #6C63FF;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f1ff;
+        }
+
+        tr:hover {
+            background-color: #ecebff;
+        }
+
+        td {
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .edit-btn {
+            background-color: #6C63FF; /* đổi từ xanh dương sang xanh tím */
+            color: white;
+            margin-right: 5px;
+        }
+
+        .edit-btn:hover {
+            background-color: #574fd6;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            color: #888;
+            font-size: 26px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #111;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin-top: 15px;
+            margin-right: 10px;
+            border-radius: 6px;
+            background-color: #6C63FF;
+            color: white;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #574fd6;
+        }
+
+        .cancel {
+            background-color: #f44336;
+        }
+
+        .cancel:hover {
+            background-color: #d32f2f;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 70px;
+            height: 36px;
+            box-sizing: border-box;
+        }
+
+    </style>
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="brand-container">
+        <h1 class="title">Danh sách thương hiệu</h1>
+
+        <a href="/Brands/create" class="add-brand-btn">Thêm thương hiệu</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tên thương hiệu</th>
+                    <th>Mô tả</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% brands.forEach(function(brand) { %>
+                    <tr>
+                        <td><%= brand.name %></td>
+                        <td><%= brand.description %></td>
+                        <td>
+                            <a href="/Brands/edit/<%= brand._id %>" class="edit-btn">
+                                Sửa
+                            </a>
+                            <button class="delete-btn" data-brand-id="<%= brand._id %>">Xóa</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Xác nhận xóa</h2>
+            <p>Bạn có chắc chắn muốn xóa thương hiệu này?</p>
+            <form id="confirmDeleteForm" method="POST" action="">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn">Xóa</button>
+                <button type="button" class="btn cancel">Hủy</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.addEventListener("click", function() {
+                const brandId = btn.getAttribute("data-brand-id");
+                const modal = document.getElementById("deleteModal");
+                const confirmForm = document.getElementById("confirmDeleteForm");
+
+                confirmForm.action = `/brands/${brandId}?_method=DELETE`;
+                modal.style.display = "block";
+            });
+        });
+
+        document.querySelector(".close").onclick = () => document.getElementById("deleteModal").style.display = "none";
+        document.querySelector(".cancel").onclick = () => document.getElementById("deleteModal").style.display = "none";
+
+        window.onclick = (event) => {
+            if (event.target == document.getElementById("deleteModal")) {
+                document.getElementById("deleteModal").style.display = "none";
+            }
+        };
+    </script>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

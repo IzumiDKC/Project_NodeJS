@@ -95,6 +95,15 @@
       <% }) %>
     </select>
 
+    <label for="brand">Brand:</label>
+    <select name="brand" id="brand" required>
+      <% brands.forEach(function(brand) { %>
+        <option value="<%= brand._id %>" <%= brand._id == product.brand._id ? 'selected' : '' %>>
+          <%= brand.name %>
+        </option>
+      <% }) %>
+    </select>
+
     <label for="description">Description:</label>
     <textarea id="description" name="description"><%= product.description %></textarea>
 

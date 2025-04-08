@@ -9,6 +9,7 @@ let productSchema = mongoose.Schema({
     description: { type: String, default: "" },
     urlImg: { type: String, default: "" },
     category: { type: mongoose.Types.ObjectId, ref: 'category', required: true },
+    brand: { type: mongoose.Types.ObjectId, ref: 'brand', required: true },
     isDeleted: { type: Boolean, default: false }
 }, { timestamps: true });
 

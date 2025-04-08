@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa danh mục</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: white;
+            margin: 2rem auto 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            padding: 2rem;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: block;
+            margin: 0 0 0.5rem;
+            color: #1e293b;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1.5rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: #3b82f6;
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            padding: 0.5rem 0;
+        }
+
+        .back-link:hover {
+            color: #3b82f6;
+        }
+
+        .back-link svg {
+            width: 1em;
+            height: 1em;
+        }
+
+    </style>
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <h1>Chỉnh sửa danh mục</h1>
+    <div class="form-container">
+        <form action="/Categories/<%= category._id %>?_method=PUT" method="POST">
+            <label for="name">Tên danh mục</label>
+            <input type="text" id="name" name="name" value="<%= category.name %>" required>
+
+            <label for="description">Mô tả</label>
+            <textarea id="description" name="description" rows="4"><%= category.description %></textarea>
+
+            <button type="submit">Cập nhật danh mục</button>
+        </form>
+        <a class="back-link" href="/Categories/view/all">← Quay lại danh sách</a>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

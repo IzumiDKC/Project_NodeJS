@@ -83,6 +83,13 @@
       <% }) %>
     </select>
 
+    <label for="brand">Thương hiệu</label>
+    <select name="brand" required>
+      <% brands.forEach(brand => { %>
+        <option value="<%= brand.name %>"><%= brand.name %></option>
+      <% }) %>
+    </select>
+
     <button type="submit">Thêm sản phẩm</button>
   </form>
 </body>
