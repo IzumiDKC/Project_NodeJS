@@ -5,6 +5,7 @@ let categoryModel = require('../schemas/category')
 let brandModel = require('../schemas/brands')
 let {CreateErrorRes,
   CreateSuccessRes} = require('../utils/responseHandler')
+const isBrowserRequest = require('../utils/checkBrowser'); 
 
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
@@ -15,11 +16,22 @@ router.get('/', async function(req, res, next) {
   CreateSuccessRes(res,products,200);
 });
 
-// FRONTEND ROUTES
 router.get('/view/all', async function(req, res, next) {
   try {
-    let products = await productModel.find({ isDeleted: false }).populate('category').populate('brand');
-    res.render('Products/indexProducts', { products });  
+    let products = await productModel.find({ isDeleted: false })
+      .populate('category')
+      .populate('brand');
+
+    if (isBrowserRequest(req)) {
+      res.render('Products/indexProducts', { products }); // Render cho trình duyệt
+    } else {
+      res.status(200).json({
+        success: true,
+        message: 'Lấy danh sách sản phẩm thành công',
+        data: products
+      }); // JSON cho Postman/API
+    }
+
   } catch (error) {
     next(error);
   }
