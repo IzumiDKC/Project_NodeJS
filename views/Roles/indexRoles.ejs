@@ -31,6 +31,7 @@
           <td><%= role.name %></td>
           <td><%= role.description %></td>
           <td>
+            <a href="/roles/view/detail/<%= role._id %>">Xem</a> |
             <a href="/roles/view/edit/<%= role._id %>">Sửa</a> |
             <form action="/roles/<%= role._id %>?_method=DELETE" method="POST" style="display:inline;">
               <button type="submit" class="btn btn-danger">Xóa</button>

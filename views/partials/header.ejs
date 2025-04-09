@@ -1,19 +1,22 @@
-<header style="background-color: #007bff; padding: 15px; color: white;">
+<header style="background-color: #007bff; padding: 15px 30px; color: white; display: flex; flex-direction: column; gap: 10px;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
     <h2 style="margin: 0;">🛍️ Website bán hàng</h2>
-    <nav style="margin-top: 10px;">
-      <a href="/products/view/all" style="color:white; margin-right: 15px;">Sản phẩm</a>
-      <a href="/Categories/view/all" style="color:white; margin-right: 15px;">Danh mục</a>
-      <a href="/Brands/view/all" style="color:white; margin-right: 15px;">Thương hiệu</a>
-      <a href="/cart/view" style="color:white;">Giỏ hàng</a>
-      <a href="/roles/view/all" style="color:white; margin-right: 15px;">Quản lý Role</a>
+    <div>
       <% if (user) { %>
-        <span>Xin chào, <%= user.username %></span>
-        <a href="/logout">Đăng xuất</a>
+        <span style="margin-right: 10px;">👋 Xin chào, <%= user.username %></span>
+        <a href="/Auth/logout" style="color: white; text-decoration: underline;">Đăng xuất</a>
       <% } else { %>
-          <a href="/login">Đăng nhập</a>
-          <a href="/signup">Đăng ký</a>
+        <a href="/Auth/login" style="color: white; margin-right: 10px;">Đăng nhập</a>
+        <a href="/Auth/signup" style="color: white;">Đăng ký</a>
       <% } %>
-    </nav>
+    </div>
+  </div>
 
-  </header>
-  
+  <nav style="display: flex; gap: 20px; font-weight: 500;">
+    <a href="/products/view/all" style="color: white; text-decoration: none;">Sản phẩm</a>
+    <a href="/Categories/view/all" style="color: white; text-decoration: none;">Danh mục</a>
+    <a href="/Brands/view/all" style="color: white; text-decoration: none;">Thương hiệu</a>
+    <a href="/cart/view" style="color: white; text-decoration: none;">Giỏ hàng</a>
+    <a href="/roles/view/all" style="color: white; text-decoration: none;">Quản lý Role</a>
+  </nav>
+</header>

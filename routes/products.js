@@ -85,6 +85,22 @@ router.get('/view/detail/:id', async function(req, res, next) {
   }
 });
 
+router.get('/delete/:id', async function(req, res, next) {
+  let id = req.params.id;
+  try {
+    let deleted = await productModel.findByIdAndUpdate(id, {
+      isDeleted: true
+    }, { new: true });
+
+    if (!deleted) {
+      return res.status(404).send("Product not found");
+    }
+
+    res.redirect('/products/view/all');
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get('/:id', async function(req, res, next) {
   try {

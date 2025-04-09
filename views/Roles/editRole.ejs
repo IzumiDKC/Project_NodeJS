@@ -2,21 +2,46 @@
 <html>
 <head>
   <title>Sửa Role</title>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
+    .container { background: #fff; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { color: #333; }
+    label { display: block; margin-top: 10px; }
+    input[type="text"], textarea {
+      width: 100%; padding: 8px; margin-top: 5px;
+      border: 1px solid #ccc; border-radius: 4px;
+    }
+    button {
+      margin-top: 20px; padding: 10px 20px;
+      background: #28a745; color: white;
+      border: none; border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { background: #218838; }
+    .btn-back {
+      display: inline-block;
+      margin-top: 15px;
+      color: #007bff;
+      text-decoration: none;
+    }
+    .btn-back:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-    <%- include('../partials/header') %>
-  <h1>Sửa Role</h1>
-  <form action="/roles/<%= role._id %>?_method=PUT" method="POST">
-    <label for="name">Tên Role:</label>
-    <input type="text" name="name" value="<%= role.name %>" required>
-    <br><br>
-    <label for="description">Mô tả:</label>
-    <input type="text" name="description" value="<%= role.description %>">
-    <br><br>
-    <button type="submit">Cập nhật</button>
-  </form>
-  <br>
-  <a href="/roles/view/all">← Quay lại danh sách</a>
-    <%- include('../partials/footer') %>
+  <%- include('../partials/header') %>
+  <div class="container">
+    <h1>Sửa Role</h1>
+    <form action="/roles/<%= role._id %>?_method=PUT" method="POST">
+      <label for="name">Tên Role:</label>
+      <input type="text" id="name" name="name" value="<%= role.name %>" required>
+
+      <label for="description">Mô tả:</label>
+      <textarea id="description" name="description" rows="4"><%= role.description %></textarea>
+
+      <button type="submit">Cập nhật</button>
+    </form>
+    <a href="/roles/view/all" class="btn-back">← Quay lại danh sách</a>
+  </div>
+  <%- include('../partials/footer') %>
 </body>
 </html>

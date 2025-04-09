@@ -15,7 +15,7 @@ const voucherRoute = require('./routes/voucher');
 var app = express();
 
 const cors = require('cors'); 
-app.use(cors({ origin: "http://localhost:4000" }));
+app.use(cors({ origin: "http://localhost:3000" }));
 
 app.use(session({
   secret: 'secret-key',
@@ -78,10 +78,11 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   CreateErrorRes(res,err.message,err.status||500);
 });
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server đang hoạt động ở cổng http://localhost:${PORT}`);
-  console.log(`Thằng này là main http://localhost:${PORT}/Products/view/all`);
+  console.log(`Login: http://localhost:${PORT}/Auth/Login`);
+  console.log(`Product: http://localhost:${PORT}/Products/view/all`);
 });
 
 module.exports = app;

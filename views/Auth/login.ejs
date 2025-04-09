@@ -1,88 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 300px;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .error {
-            color: red;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .register-link {
-            text-align: center;
-            margin-top: 15px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background-image: url(https://raw.githubusercontent.com/CiurescuP/LogIn-Form/main/bg.jpg);
+      background-size: cover;
+      background-repeat: no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    form {
+      width: 450px;
+      background-color: rgba(255, 255, 255, 0.13);
+      border-radius: 17px;
+      backdrop-filter: blur(5px);
+      border: 5px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 40px rgba(129, 236, 174, 0.6);
+      padding: 30px;
+      color: #fff;
+    }
+
+    form h3 {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 20px;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      background: rgba(0, 0, 0, 0.22);
+      border: 2px solid #38363654;
+      border-radius: 5px;
+      color: #fff;
+    }
+
+    input:focus {
+      background: #434343;
+      outline: none;
+      box-shadow: 0 0 5px #629677;
+    }
+
+    button[type="submit"] {
+      margin-top: 20px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.22);
+      border: 2px solid #38363654;
+      border-radius: 5px;
+      color: #fff;
+      padding: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background: #629677;
+    }
+
+    .social-text {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .social-icon {
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .social-icon:hover {
+      box-shadow: 0px 4px 14px #0000007a;
+      background: #629677;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .register-link a {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <% if (error) { %>
-            <div class="error"><%= error %></div>
-        <% } %>
-        <form action="/auth/login" method="POST">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit">Login</button>
-        </form>        
-        <div class="register-link">
-            Don't have an account? <a href="/auth/signup">Sign up</a>
-        </div>
+  <form action="/auth/login" method="POST">
+    <h3>Login Here</h3>
+
+    <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" placeholder="Email or Phone" required>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Password" required>
+
+    <button type="submit">Log In</button>
+
+    <p class="social-text">Login with a social media account</p>
+
+    <div class="social-icons">
+      <button type="button" class="social-icon"><i class="fa-brands fa-facebook-f"></i></button>
+      <button type="button" class="social-icon"><i class="fa-brands fa-twitter"></i></button>
+      <button type="button" class="social-icon"><i class="fa-brands fa-instagram"></i></button>
     </div>
+
+    <p class="register-link">
+      Don't have an account? <a href="/auth/signup">Sign up</a>
+    </p>
+  </form>
 </body>
 </html>

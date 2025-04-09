@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chi tiết Role</title>
+  <style>
+    body { font-family: Arial; background: #f9f9f9; padding: 20px; }
+    h1 { color: #444; }
+    .container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    p { margin: 10px 0; }
+    .btn-back { display: inline-block; margin-top: 20px; padding: 6px 12px; background: #007bff; color: #fff; text-decoration: none; border-radius: 4px; }
+    .btn-back:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <div class="container">
+    <h1>Chi tiết Role</h1>
+    <p><strong>ID:</strong> <%= role._id %></p>
+    <p><strong>Tên Role:</strong> <%= role.name %></p>
+    <p><strong>Mô tả:</strong> <%= role.description || 'Không có mô tả' %></p>
+    <a href="/roles/view/all" class="btn-back">← Quay lại danh sách</a>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

@@ -67,23 +67,56 @@
       font-weight: bold;
     }
 
-    .product-quantity {
-      font-size: 13px;
-      color: #888;
-    }
-
-    .product-category {
-      font-size: 13px;
-      color: #999;
-    }
-
+    .product-quantity,
+    .product-category,
     .product-brand {
       font-size: 13px;
       color: #999;
     }
+
+    .product-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .product-actions button,
+    .product-actions form button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background-color 0.3s ease;
+    }
+
+    .product-actions button:hover,
+    .product-actions form button:hover {
+      background-color: #0056b3;
+    }
+
+    .action-links {
+      margin: 20px;
+      text-align: center;
+    }
+
+    .action-links a {
+      margin: 0 10px;
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .action-links a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
+
   <%- include('../partials/header') %>
 
   <h1>Danh sách sản phẩm</h1>
@@ -99,25 +132,51 @@
           <div class="product-quantity">Số lượng: <%= product.quantity %></div>
           <div class="product-category">Danh mục: <%= product.category?.name || 'Không rõ' %></div>
           <div class="product-brand">Thương hiệu: <%= product.brand?.name || 'Không rõ' %></div>
-          
-          <button onclick="window.location.href='/products/view/edit/<%= product.id %>'">Sửa</button>
-          <button onclick="if(confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) { window.location.href='/delete/<%= product.id %>' }">Xóa</button>
-          
-          <button onclick="window.location.href='/products/view/detail/<%= product.id %>'">Chi tiết</button>
-          <form action="/cart/add/<%= product._id %>" method="POST" style="margin-top:10px;">
-            <button type="submit">Thêm vào giỏ</button>
-          </form>
+
+          <div class="product-actions">
+            <button onclick="window.location.href='/products/view/edit/<%= product.id %>'">Sửa</button>
+            <button onclick="deleteProduct('<%= product._id %>')">Xóa</button>
+            <button onclick="window.location.href='/products/view/detail/<%= product.id %>'">Chi tiết</button>
+            <form action="/cart/add/<%= product._id %>" method="POST">
+              <button type="submit">Thêm vào giỏ</button>
+            </form>
+          </div>
         </div>
       </div>
     <% }) %>
   </div>
 
-  <div>
-    <a href="/products/view/create">Thêm sản phẩm mới</a>
-    <a href="/cart/view">Giỏ hàng</a>
+  <div class="action-links">
+    <a href="/products/view/create">➕ Thêm sản phẩm mới</a>
+    <a href="/cart/view">🛒 Xem giỏ hàng</a>
   </div>
 
-  
   <%- include('../partials/footer') %>
 </body>
 </html>
+
+<script>
+  function deleteProduct(productId) {
+    if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+      fetch(`/products/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          alert("Xoá thành công");
+          window.location.href = '/products/view/all';
+        } else {
+          return response.json().then(data => {
+            throw new Error(data.message || "Xoá thất bại");
+          });
+        }
+      })
+      .catch(error => {
+        alert("Lỗi: " + error.message);
+      });
+    }
+  }
+</script>

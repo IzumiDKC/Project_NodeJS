@@ -39,11 +39,12 @@ module.exports = {
                 });
         
                 if (!role) {
-                    role = await roleModel.findOne({ name: "user" });
-                    if (!role) {
-                        throw new Error("Role mặc định 'user' không tồn tại");
-                    }
-                }    
+                    role = await roleModel.create({
+                        name: rolename,
+                        description: `Vai trò ${rolename}`,
+                        isDeleted: false
+                    });
+                }
                 let user = new userModel({
                     username: username,
                     password: password,

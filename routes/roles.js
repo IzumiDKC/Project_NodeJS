@@ -3,6 +3,7 @@ var router = express.Router();
 var roleController = require('../controllers/roles');
 let { CreateErrorRes, CreateSuccessRes } = require('../utils/responseHandler');
 const isBrowserRequest = require('../utils/checkBrowser');
+const Role = require('../schemas/role');
 
 // Get all roles
 router.get('/', async function(req, res, next) {
@@ -76,6 +77,22 @@ router.get('/view/all', async function(req, res, next) {
      next(error);
    }
  });
+
+ router.get('/view/detail/:id', async function(req, res, next) {
+  try {
+    let role = await roleController.GetRoleById(req.params.id);
+    if (!role || role.isDeleted) return CreateErrorRes(res, 'Role không tồn tại', 404);
+
+    if (isBrowserRequest(req)) {
+      res.render('Roles/detailRole', { role });
+    } else {
+      CreateSuccessRes(res, role, 200);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 
  router.put('/:id', async function(req, res, next) {
    try {

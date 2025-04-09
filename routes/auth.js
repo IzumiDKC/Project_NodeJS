@@ -13,14 +13,18 @@ let {sendmail} = require('../utils/sendmail')
 router.get('/login', (req, res) => {
     res.render('Auth/login', { error: null });
 });
+
 router.get('/signup', (req, res) => {
     res.render('Auth/signup', { error: null });
 });
+
+
 router.get('/logout', (req, res) => {
     res.clearCookie('token');
     req.session.destroy();
-    res.redirect('/login'); 
+    res.redirect('/Auth/login'); 
 });
+
 router.post('/login', async function (req, res, next) {
     try {
         let body = req.body;
@@ -28,31 +32,53 @@ router.post('/login', async function (req, res, next) {
         let password = body.password;
         let userID = await userController.CheckLogin(username, password);
         let user = await userController.GetUserByID(userID);
+
         req.session.user = user;
-        CreateSuccessRes(res, jwt.sign({
+
+        const token = jwt.sign({
             id: userID,
             expire: (new Date(Date.now() + 60 * 60 * 1000)).getTime()
-        }, constants.SECRET_KEY), 200)
-        
+        }, constants.SECRET_KEY);
+
+        // Nếu là từ trình duyệt (form đăng nhập)
+        if (req.headers.accept && req.headers.accept.includes('text/html')) {
+            // lưu token vào cookie nếu cần
+            res.cookie('token', token);
+            return res.redirect('/products/view/all');
+        }
+
+        // Nếu là từ API (Postman)
+        CreateSuccessRes(res, token, 200);
+
     } catch (error) {
-        next(error)
+        next(error);
     }
 });
+
 
 router.post('/signup', validatorLogin, validate, async function (req, res, next) {
     try {
         let body = req.body;
         let newUser = await userController.CreateAnUser(
             body.username, body.password, body.email, 'user'
-        )
-        CreateSuccessRes(res, jwt.sign({
+        );
+
+        // Nếu là từ trình duyệt (form), redirect về login
+        if (req.headers.accept && req.headers.accept.includes('text/html')) {
+            return res.redirect('/auth/login');
+        }
+
+        // Nếu là từ Postman hoặc fetch API, trả JSON
+        return CreateSuccessRes(res, jwt.sign({
             id: newUser._id,
             expire: (new Date(Date.now() + 60 * 60 * 1000)).getTime()
         }, constants.SECRET_KEY), 200);
+
     } catch (error) {
-        next(error)
+        next(error);
     }
-})
+});
+
 
 router.get('/me', check_authentication, async function (req, res, next) {
     console.log(req.user);
