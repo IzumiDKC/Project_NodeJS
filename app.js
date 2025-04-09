@@ -1,6 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose')
@@ -10,11 +11,26 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const menuRouter = require('./routes/menu');
 const cartRoutes = require('./routes/cart');
-
+const voucherRoute = require('./routes/voucher');
 var app = express();
 
 const cors = require('cors'); 
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ origin: "http://localhost:4000" }));
+
+app.use(session({
+  secret: 'secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+      maxAge: 1000 * 60 * 60 
+  }
+}));
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null; // user login
+  res.locals.successMessage = req.session.successMessage || null;
+  res.locals.errorMessage = req.session.errorMessage || null;
+  next();
+});
 
 mongoose.connect("mongodb://localhost:27017/S5");
 mongoose.connection.on('connected',()=>{
@@ -36,7 +52,7 @@ app.set('layout', 'layouts/layout');
 app.use(express.static('public')); 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -49,6 +65,7 @@ app.use('/products', require('./routes/products'));
 app.use('/categories', require('./routes/categories'));
 app.use('/cart', require('./routes/cart'));
 app.use('/brands', require('./routes/brands'));
+app.use('/voucher', voucherRoute);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -61,7 +78,7 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   CreateErrorRes(res,err.message,err.status||500);
 });
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server đang hoạt động ở cổng http://localhost:${PORT}`);
   console.log(`Thằng này là main http://localhost:${PORT}/Products/view/all`);

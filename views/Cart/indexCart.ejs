@@ -44,6 +44,21 @@
       color: #888;
       margin-top: 50px;
     }
+
+    .voucher-form {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .voucher-info {
+      color: green;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .discount {
+      color: red;
+    }
   </style>
 </head>
 <body>
@@ -62,6 +77,7 @@
           <th>Số lượng</th>
           <th>Giá</th>
           <th>Thành tiền</th>
+          <th>Thao tác</th>
         </tr>
       </thead>
       <tbody>
@@ -72,23 +88,41 @@
             <td><%= item.quantity %></td>
             <td><%= item.product.price %>₫</td>
             <td><%= item.product.price * item.quantity %>₫</td>
-            <td><a href="#" onclick="removeItem('<%= item.product._id %>'); return false;">❌ Xoá</a>
-            </td>
+            <td><a href="#" onclick="removeItem('<%= item.product._id %>'); return false;">❌ Xoá</a></td>
           </tr>
         <% }) %>
       </tbody>
     </table>
+
     <a href="#" onclick="clearCart(); return false;">🗑️ Xoá toàn bộ giỏ hàng</a>
 
+    <form action="/cart/voucher/apply" method="POST">
+      <input type="text" name="code" placeholder="Nhập mã giảm giá">
+      <button type="submit">Áp dụng</button>
+    </form>
+
+    <% if (voucher) { %>
+      <div class="voucher-info">
+        Đã áp dụng voucher: <strong><%= voucher.code %></strong> (-<%= voucher.discount %>%)
+        <br>
+        Giảm giá: <span class="discount"><%= discount %>₫</span>
+      </div>
+    <% } %>
+
     <p class="total">Tổng cộng: <%= total %>₫</p>
+    <% if (voucher) { %>
+      <p class="total">Tổng thanh toán sau giảm: <%= finalTotal %>₫</p>
+    <% } %>
+
   <% } %>
 
   <div style="text-align: center; margin-top: 20px;">
     <a href="/products/view/all">Quay lại danh sách sản phẩm</a>
     <a href="/checkout" style="margin-left: 20px;">Thanh toán</a>
+  </div>
+
   <%- include('../partials/footer') %>
-</body>
-</html>
+
 <script>
   function removeItem(productId) {
     if (confirm('Xoá sản phẩm này?')) {
@@ -104,16 +138,19 @@
   }
 
   function clearCart() {
-  if (confirm('Xoá toàn bộ giỏ hàng?')) {
-    fetch('/cart/clear', {
-      method: 'DELETE'
-    })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message || 'Đã xoá toàn bộ');
-      location.reload(); 
-    })
-    .catch(err => console.error('Lỗi khi xoá:', err));
+    if (confirm('Xoá toàn bộ giỏ hàng?')) {
+      fetch('/cart/clear', {
+        method: 'DELETE'
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message || 'Đã xoá toàn bộ');
+        location.reload(); 
+      })
+      .catch(err => console.error('Lỗi khi xoá:', err));
+    }
   }
-}
-  </script>
+</script>
+
+</body>
+</html>

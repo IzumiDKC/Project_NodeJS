@@ -6,6 +6,14 @@
       <a href="/Brands/view/all" style="color:white; margin-right: 15px;">Thương hiệu</a>
       <a href="/cart/view" style="color:white;">Giỏ hàng</a>
       <a href="/roles/view/all" style="color:white; margin-right: 15px;">Quản lý Role</a>
+      <% if (user) { %>
+        <span>Xin chào, <%= user.username %></span>
+        <a href="/logout">Đăng xuất</a>
+      <% } else { %>
+          <a href="/login">Đăng nhập</a>
+          <a href="/signup">Đăng ký</a>
+      <% } %>
     </nav>
+
   </header>
   

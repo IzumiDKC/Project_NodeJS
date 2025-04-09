@@ -6,7 +6,9 @@ let brandModel = require('../schemas/brands')
 let {CreateErrorRes,
   CreateSuccessRes} = require('../utils/responseHandler')
 const isBrowserRequest = require('../utils/checkBrowser'); 
+const check_auth = require('../utils/check_auth');
 
+router.use(check_auth.check_authentication);
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
   let products = await productModel.find({

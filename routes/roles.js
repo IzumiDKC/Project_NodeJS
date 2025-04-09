@@ -19,7 +19,7 @@ router.get('/view/all', async function(req, res, next) {
      let roles = await roleController.GetAllRoles();
  
      if (isBrowserRequest(req)) {
-       res.render('Roles/indexRoles', { roles }); // Giao diện HTML
+      res.render('Roles/indexRoles', { roles, user: req.session.user }); // Giao diện HTML
      } else {
        res.status(200).json({
          success: true,
@@ -56,7 +56,7 @@ router.get('/view/all', async function(req, res, next) {
      const newRole = await roleController.CreateARole(name, description || "");
  
      if (isBrowserRequest(req)) {
-       res.redirect('/roles/view/all');
+       res.redirect('/roles/view/all', { user: req.session.user });
      } else {
        CreateSuccessRes(res, newRole, 201);
      }
@@ -70,7 +70,8 @@ router.get('/view/all', async function(req, res, next) {
    try {
      let role = await Role.findById(req.params.id);
      if (!role || role.isDeleted) return CreateErrorRes(res, 'Role không tồn tại', 404);
-     res.render('Roles/editRole', { role });
+     res.render('Roles/editRole', { role, user: req.session.user });
+     
    } catch (error) {
      next(error);
    }

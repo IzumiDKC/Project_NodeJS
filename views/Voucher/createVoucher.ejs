@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm Voucher</title>
+</head>
+<body>
+
+<h1>Thêm Voucher mới</h1>
+
+<form action="/voucher" method="POST">
+  <label>Mã Voucher:</label>
+  <input type="text" name="code" required>
+
+  <label>Phần trăm giảm giá (%):</label>
+  <input type="number" name="discount" min="1" max="100" required>
+
+  <label>Số lượng:</label>
+  <input type="number" name="quantity" min="1" required>
+
+  <label>Ngày bắt đầu:</label>
+  <input type="date" name="startDate" required>
+
+  <label>Ngày kết thúc:</label>
+  <input type="date" name="endDate" required>
+
+  <button type="submit">Thêm Voucher</button>
+</form>
+
+  
+<a href="/voucher/view/all">Quay lại</a>
+
+</body>
+</html>

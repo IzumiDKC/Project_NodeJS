@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Voucher</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+    h1 { text-align: center; color: #333; }
+    table { width: 100%; border-collapse: collapse; background-color: #fff; margin-top: 20px; }
+    th, td { padding: 10px; border-bottom: 1px solid #ccc; text-align: left; }
+    th { background-color: #007bff; color: white; }
+    a.button { background: #28a745; color: white; padding: 5px 10px; text-decoration: none; border-radius: 4px; }
+    a.delete { background: #dc3545; }
+  </style>
+</head>
+<body>
+
+<h1>Quản lý Voucher</h1>
+
+<a class="button" href="/voucher/view/create">Thêm Voucher mới</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>Mã Voucher</th>
+      <th>Phần trăm giảm</th>
+      <th>Ngày bắt đầu</th>
+      <th>Ngày kết thúc</th>
+      <th>Chức năng</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% vouchers.forEach(voucher => { %>
+      <tr>
+        <td><%= voucher.code %></td>
+        <td><%= voucher.discount %>%</td>
+        <td><%= voucher.startDate.toLocaleDateString() %></td>
+        <td><%= voucher.endDate.toLocaleDateString() %></td>
+        <td>
+          <a class="button" href="/voucher/view/edit/<%= voucher._id %>">Sửa</a>
+          <a class="button delete" href="/voucher/delete/<%= voucher._id %>" onclick="return confirm('Xoá voucher này?')">Xoá</a>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+</body>
+</html>

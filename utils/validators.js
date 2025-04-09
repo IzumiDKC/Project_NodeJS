@@ -1,6 +1,7 @@
 let { body, validationResult } = require('express-validator')
 let constants = require('./constants')
 let utils = require('util')
+let { CreateErrorRes} = require('./responseHandler')
 const { ERROR_EMAIL, ERROR_ROLE } = require('./constants')
 let options = {
     password: {

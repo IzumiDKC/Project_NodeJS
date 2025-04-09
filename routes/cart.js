@@ -2,7 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Cart = require('../schemas/cart');
 const Product = require('../schemas/products');
+const check_auth = require('../utils/check_auth');
+const Voucher = require('../schemas/voucher');
 
+
+router.use(check_auth.check_authentication);
 // Middleware kiểm tra User-Agent
 function isBrowser(req) {
   return req.get('User-Agent')?.includes('Mozilla');
@@ -11,8 +15,9 @@ function isBrowser(req) {
 // CREATE - Thêm sản phẩm vào giỏ
 router.post('/add/:productId', async (req, res) => {
   try {
+    const userId = req.user._id;
     const productId = req.params.productId;
-    const userId = req.user?._id || '660000000000000000000000';
+
 
     let cart = await Cart.findOne({ user: userId });
 
@@ -47,18 +52,29 @@ router.post('/add/:productId', async (req, res) => {
   }
 });
 
-// READ - Xem giỏ hàng
 router.get('/view', async (req, res) => {
   try {
-    const userId = req.user?._id || '660000000000000000000000';
-
+    const userId = req.session.user._id;
     const cart = await Cart.findOne({ user: userId }).populate('items.product');
     const cartItems = cart?.items || [];
 
-    const total = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    let total = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
+    let discount = 0;
+    let voucherData = null;
+
+    if (req.session.voucher) {
+      const voucher = await Voucher.findById(req.session.voucher._id);
+      if (voucher) {
+        discount = (total * voucher.discount) / 100;
+        voucherData = voucher;
+      }
+    }
+
+    let finalTotal = total - discount;
 
     if (isBrowser(req)) {
-      res.render('Cart/indexCart', { cartItems, total });
+      res.render('Cart/indexCart', { cartItems, total, discount, finalTotal, voucher: voucherData });
     } else {
       res.status(200).json({
         cartItems: cartItems.map(item => ({
@@ -68,7 +84,10 @@ router.get('/view', async (req, res) => {
           quantity: item.quantity,
           subtotal: item.product.price * item.quantity
         })),
-        total
+        total,
+        discount,
+        finalTotal,
+        voucher: voucherData
       });
     }
   } catch (err) {
@@ -80,10 +99,11 @@ router.get('/view', async (req, res) => {
   }
 });
 
+
 // UPDATE - Cập nhật số lượng sản phẩm trong giỏ
 router.put('/update/:productId', async (req, res) => {
   try {
-    const userId = req.user?._id || '660000000000000000000000';
+    const userId = req.session.user._id;
     const productId = req.params.productId;
     const { quantity } = req.body;
 
@@ -108,7 +128,7 @@ router.put('/update/:productId', async (req, res) => {
 // DELETE - Xoá 1 sản phẩm khỏi giỏ
 router.delete('/remove/:productId', async (req, res) => {
   try {
-    const userId = req.user?._id || '660000000000000000000000';
+    const userId = req.session.user._id;
     const productId = req.params.productId;
 
     const cart = await Cart.findOne({ user: userId });
@@ -127,7 +147,7 @@ router.delete('/remove/:productId', async (req, res) => {
 // DELETE - Xoá toàn bộ giỏ hàng
 router.delete('/clear', async (req, res) => {
   try {
-    const userId = req.user?._id || '660000000000000000000000';
+    const userId = req.session.user._id;
     await Cart.findOneAndDelete({ user: userId });
 
     res.status(200).json({ message: "Đã xoá toàn bộ giỏ hàng" });
@@ -135,5 +155,17 @@ router.delete('/clear', async (req, res) => {
     res.status(500).json({ error: "Lỗi khi xoá giỏ hàng" });
   }
 });
+router.post('/voucher/apply', async (req, res) => {
+  const { code } = req.body;
+  const voucher = await Voucher.findOne({ code });
+
+  if (!voucher) {
+    return res.redirect('/cart/view'); // Không có mã
+  }
+
+  req.session.voucher = { _id: voucher._id };  // Chỉ lưu _id vào session
+  res.redirect('/cart/view');
+});
+
 
 module.exports = router;

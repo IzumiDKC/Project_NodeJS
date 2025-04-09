@@ -10,16 +10,30 @@ let crypto = require('crypto')
 let {sendmail} = require('../utils/sendmail')
 
 /* GET home page. */
+router.get('/login', (req, res) => {
+    res.render('Auth/login', { error: null });
+});
+router.get('/signup', (req, res) => {
+    res.render('Auth/signup', { error: null });
+});
+router.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    req.session.destroy();
+    res.redirect('/login'); 
+});
 router.post('/login', async function (req, res, next) {
     try {
         let body = req.body;
         let username = body.username;
         let password = body.password;
         let userID = await userController.CheckLogin(username, password);
+        let user = await userController.GetUserByID(userID);
+        req.session.user = user;
         CreateSuccessRes(res, jwt.sign({
             id: userID,
             expire: (new Date(Date.now() + 60 * 60 * 1000)).getTime()
         }, constants.SECRET_KEY), 200)
+        
     } catch (error) {
         next(error)
     }
@@ -38,18 +52,6 @@ router.post('/signup', validatorLogin, validate, async function (req, res, next)
     } catch (error) {
         next(error)
     }
-})
-router.post('/changepassword', check_authentication, async function (req, res, next) {
-    try {
-        let body = req.body;
-        let oldpassword = body.oldpassword;
-        let newpassword = body.newpassword;
-        let result = await userController.ChangePassword(req.user, oldpassword, newpassword);
-        CreateSuccessRes(res, result, 200);
-    } catch (error) {
-        next(error)
-    }
-
 })
 
 router.get('/me', check_authentication, async function (req, res, next) {
