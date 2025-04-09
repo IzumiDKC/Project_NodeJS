@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sửa Role</title>
+</head>
+<body>
+    <%- include('../partials/header') %>
+  <h1>Sửa Role</h1>
+  <form action="/roles/<%= role._id %>?_method=PUT" method="POST">
+    <label for="name">Tên Role:</label>
+    <input type="text" name="name" value="<%= role.name %>" required>
+    <br><br>
+    <label for="description">Mô tả:</label>
+    <input type="text" name="description" value="<%= role.description %>">
+    <br><br>
+    <button type="submit">Cập nhật</button>
+  </form>
+  <br>
+  <a href="/roles/view/all">← Quay lại danh sách</a>
+    <%- include('../partials/footer') %>
+</body>
+</html>

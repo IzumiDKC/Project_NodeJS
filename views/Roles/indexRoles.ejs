@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Danh sách Role</title>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
+    h1 { color: #333; }
+    table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
+    a { text-decoration: none; color: #007bff; }
+    a:hover { text-decoration: underline; }
+    .btn { padding: 6px 12px; border: none; background: #007bff; color: white; border-radius: 4px; cursor: pointer; }
+    .btn-danger { background: #dc3545; }
+  </style>
+</head>
+<body>
+    <%- include('../partials/header') %>
+  <h1>Danh sách Role</h1>
+  <a href="/roles/view/create" class="btn">+ Thêm Role mới</a>
+  <table>
+    <thead>
+      <tr>
+        <th>Tên Role</th>
+        <th>Mô tả</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% roles.forEach(role => { %>
+        <tr>
+          <td><%= role.name %></td>
+          <td><%= role.description %></td>
+          <td>
+            <a href="/roles/view/edit/<%= role._id %>">Sửa</a> |
+            <form action="/roles/<%= role._id %>?_method=DELETE" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-danger">Xóa</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <%- include('../partials/footer') %>
+</body>
+</html>

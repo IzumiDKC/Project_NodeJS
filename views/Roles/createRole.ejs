@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tạo Role</title>
+</head>
+<body>
+    <%- include('../partials/header') %>
+  <h1>Tạo Role mới</h1>
+  <form action="/roles/view/create" method="POST">
+    <label for="name">Tên Role:</label>
+    <input type="text" name="name" required>
+    <br><br>
+    <label for="description">Mô tả:</label>
+    <input type="text" name="description">
+    <br><br>
+    <button type="submit">Tạo</button>
+  </form>
+  <br>
+  <a href="/roles/view/all">← Quay lại danh sách</a>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>
