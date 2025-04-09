@@ -60,6 +60,29 @@ router.get('/view/edit/:id', async function(req, res, next) {
   }
 });
 
+router.get('/view/detail/:id', async function(req, res, next) {
+  try {
+    let product = await productModel.findById(req.params.id)
+      .populate('category')
+      .populate('brand');
+
+    if (!product) {
+      return isBrowserRequest(req)
+        ? res.status(404).render('404')
+        : CreateErrorRes(res, "Product not found", 404);
+    }
+
+    if (isBrowserRequest(req)) {
+      res.render('Products/detailProduct', { product });
+    } else {
+      CreateSuccessRes(res, product, 200);
+    }
+
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 router.get('/:id', async function(req, res, next) {
   try {

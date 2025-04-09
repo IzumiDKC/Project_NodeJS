@@ -103,7 +103,7 @@
           <button onclick="window.location.href='/products/view/edit/<%= product.id %>'">Sửa</button>
           <button onclick="if(confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) { window.location.href='/delete/<%= product.id %>' }">Xóa</button>
           
-          <button onclick="window.location.href='/product/<%= product.id %>'">Chi tiết</button>
+          <button onclick="window.location.href='/products/view/detail/<%= product.id %>'">Chi tiết</button>
           <form action="/cart/add/<%= product._id %>" method="POST" style="margin-top:10px;">
             <button type="submit">Thêm vào giỏ</button>
           </form>
