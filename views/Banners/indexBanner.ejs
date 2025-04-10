@@ -1,0 +1,135 @@
+<%- include('../partials/header') %>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to right, #dbefff, #f0f8ff);
+  }
+
+  .btn-create {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+
+  .btn-create:hover {
+    background-color: #0056b3;
+  }
+
+  /* SLIDESHOW */
+  .slideshow-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  #slideshow {
+    display: flex;
+    transition: transform 0.6s ease-in-out;
+  }
+
+  #slideshow img {
+    min-width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  /* GRID BANNER */
+  .banner-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+    padding: 30px;
+  }
+
+  .banner-card {
+    border: 1px solid #e0e0e0;
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    width: 220px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+  }
+
+  .banner-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+
+  .banner-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  .banner-card h4 {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .banner-card a {
+    text-decoration: none;
+    font-size: 14px;
+    margin: 0 4px;
+  }
+
+  .banner-card a:nth-child(1) { color: #007BFF; }
+  .banner-card a:nth-child(2) { color: #28A745; }
+  .banner-card a:nth-child(3) { color: #DC3545; }
+</style>
+
+<h1 style="text-align: center; margin-top: 30px; color: #333;">Danh sách Banner</h1>
+<div style="text-align: center; margin-bottom: 25px;">
+  <a href="/banners/view/create" class="btn-create">+ Thêm banner</a>
+</div>
+
+<!-- SLIDESHOW -->
+<div class="slideshow-wrapper">
+  <div id="slideshow">
+    <% banners.forEach(banner => { %>
+      <img src="<%= banner.img_url %>" alt="Banner">
+    <% }) %>
+  </div>
+</div>
+
+<div class="banner-grid">
+  <% banners.forEach(banner => { %>
+    <div class="banner-card">
+      <img src="<%= banner.img_url %>" alt="Banner">
+      <h4><%= banner.title %></h4>
+      <div>
+        <a href="/banners/view/detail/<%= banner._id %>">Chi tiết</a> |
+        <a href="/banners/view/edit/<%= banner._id %>">Sửa</a> |
+        <a href="/banners/view/delete/<%= banner._id %>">Xóa</a>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<script>
+  const slideshow = document.getElementById('slideshow');
+  const slides = slideshow.children.length;
+  let index = 0;
+
+  setInterval(() => {
+    index = (index + 1) % slides;
+    slideshow.style.transform = `translateX(-${index * 100}%)`;
+  }, 3000);
+</script>
+
+<%- include('../partials/footer') %>

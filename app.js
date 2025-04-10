@@ -12,7 +12,10 @@ var usersRouter = require('./routes/users');
 const menuRouter = require('./routes/menu');
 const cartRoutes = require('./routes/cart');
 const voucherRoute = require('./routes/voucher');
+const bannerRoutes = require('./routes/banners');
+
 var app = express();
+app.use(express.static('public'));
 
 const cors = require('cors'); 
 app.use(cors({ origin: "http://localhost:3000" }));
@@ -36,15 +39,15 @@ mongoose.connect("mongodb://localhost:27017/S5");
 mongoose.connection.on('connected',()=>{
   console.log("Database connected");
 })
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'pug');
+
+
 var methodOverride = require('method-override');
 app.use(methodOverride('_method'));  // Giả lập PUT, DELETE
 
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
-app.set('layout', 'layouts/layout'); // Đặt layout mặc định cho tất cả các view
+app.set('layout', 'layouts/layout'); // Đặt layout mặc định
 app.set('views', path.join(__dirname, 'views'));
 
 app.set('layout', 'layouts/layout');
@@ -66,6 +69,8 @@ app.use('/categories', require('./routes/categories'));
 app.use('/cart', require('./routes/cart'));
 app.use('/brands', require('./routes/brands'));
 app.use('/voucher', voucherRoute);
+app.use('/banners', bannerRoutes);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

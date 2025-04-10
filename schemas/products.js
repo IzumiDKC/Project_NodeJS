@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-const slugify = require('slugify'); // Thư viện tạo slug
+const slugify = require('slugify');
 
 let productSchema = mongoose.Schema({
     name: { type: String, required: true, unique: true },
-    slug: { type: String, unique: true },  // Thêm slug
+    slug: { type: String, unique: true }, 
     price: { type: Number, required: true, min: 0 },
     quantity: { type: Number, default: 0, required: true, min: 0 },
     description: { type: String, default: "" },

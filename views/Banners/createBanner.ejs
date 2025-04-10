@@ -1,0 +1,92 @@
+
+<style>
+  body {
+    background: linear-gradient(135deg, #c3f0ff, #e0eafc);
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .form-container {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 30px 40px;
+    border-radius: 20px;
+    width: 400px;
+    text-align: center;
+  }
+
+  .form-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .form-container label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #444;
+    text-align: left;
+  }
+
+  .form-container input[type="text"],
+  .form-container input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+
+  .form-container button {
+    margin-top: 25px;
+    padding: 12px 25px;
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .form-container button:hover {
+    background-color: #0088cc;
+  }
+
+  .back-link {
+    margin-top: 20px;
+    display: block;
+    color: #0077aa;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="form-container">
+  <h2>Thêm Banner</h2>
+
+  <form action="/banners/view/create" method="POST" enctype="multipart/form-data">
+    <label for="title">Tiêu đề:</label>
+    <input type="text" name="title" id="title" placeholder="Nhập tiêu đề banner" />
+
+    <label for="imageUrl">Ảnh từ URL:</label>
+    <input type="text" name="imageUrl" id="imageUrl" placeholder="https://example.com/banner.jpg" />
+
+    <label for="imageFile">Hoặc chọn ảnh từ máy:</label>
+    <input type="file" name="imageFile" id="imageFile" accept="image/*" />
+
+    <button type="submit">Tạo banner</button>
+  </form>
+
+  <a class="back-link" href="/banners/view/all">⬅️ Quay lại danh sách</a>
+</div>
+
