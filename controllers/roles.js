@@ -17,7 +17,7 @@ module.exports = {
       });
       return await newRole.save();
     } catch (error) {
-      throw new Error(error.message);
+      next(error);
     }
   },
 

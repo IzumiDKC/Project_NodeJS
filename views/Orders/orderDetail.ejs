@@ -67,7 +67,9 @@
     <p>📍 <strong>Địa chỉ:</strong> <%= order.shippingAddress %></p>
     <p>📝 <strong>Ghi chú:</strong> <%= order.notes %></p>
     <p>💰 <strong>Tổng tiền:</strong> <%= order.totalPrice.toLocaleString() %> đ</p>
-
+    <p>💰 <strong>Tổng tiền:</strong> <%= order.totalPrice.toLocaleString() %> đ</p>
+    <p>🔻 <strong>Giảm giá:</strong> <%= order.discount %>%</p>
+    <p>✅ <strong>Giá sau giảm:</strong> <%= order.finalPrice.toLocaleString() %> đ</p>
     <h2>🛍 Sản phẩm trong đơn hàng</h2>
     <table>
       <thead>

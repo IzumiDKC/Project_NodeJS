@@ -57,7 +57,7 @@ router.get('/view/all', async function(req, res, next) {
      const newRole = await roleController.CreateARole(name, description || "");
  
      if (isBrowserRequest(req)) {
-       res.redirect('/roles/view/all', { user: req.session.user });
+       res.redirect('/roles/view/all');
      } else {
        CreateSuccessRes(res, newRole, 201);
      }

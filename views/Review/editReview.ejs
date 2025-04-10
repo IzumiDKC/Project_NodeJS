@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sửa Review</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      padding: 20px;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #17a2b8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: block;
+      margin: auto;
+    }
+    button:hover {
+      background-color: #138496;
+    }
+  </style>
+</head>
+<body>
+    <%- include('../partials/header') %>
+  <div class="form-container">
+    <h2>Sửa Review</h2>
+    <form action="/reviews/<%= review._id %>?_method=PUT" method="POST">
+      <label>Comment:</label>
+      <textarea name="comment" rows="5"><%= review.comment %></textarea>
+
+      <button type="submit">Cập nhật</button>
+    </form>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

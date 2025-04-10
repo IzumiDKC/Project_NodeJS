@@ -6,44 +6,40 @@ const { CreateErrorRes, CreateSuccessRes } = require('../utils/responseHandler')
 const { check_authentication } = require('../utils/check_auth');
 const mongoose = require('mongoose');
 
-
+// Lấy tất cả đơn hàng dưới dạng JSON
 router.get('/', check_authentication, async (req, res, next) => {
   try {
     const userId = req.user.id;
-    let orders = await orderModel.find({ userId, isDeleted: false });
+    const orders = await orderModel.find({ userId, isDeleted: false });
     CreateSuccessRes(res, orders, 200);
   } catch (error) {
     next(error);
   }
 });
 
+// Hiển thị tất cả đơn hàng dạng view
 router.get('/view/all', check_authentication, async (req, res, next) => {
   try {
     const userId = req.user.id;
-    let orders = await orderModel.find({ userId, isDeleted: false }).populate('userId', 'email');
+    const orders = await orderModel.find({ userId, isDeleted: false }).populate('userId', 'email');
     res.render('Orders/indexOrder', { orders });
   } catch (error) {
     next(error);
   }
 });
 
-// Lấy thông tin một đơn hàng theo ID
+// Lấy đơn hàng theo ID
 router.get('/:id', check_authentication, async (req, res, next) => {
   try {
-    let order = await orderModel.findOne({
-      _id: req.params.id,
-      isDeleted: false
-    });
-
+    const order = await orderModel.findOne({ _id: req.params.id, isDeleted: false });
     if (!order) return res.status(404).json({ error: 'Không tìm thấy đơn hàng' });
-
     CreateSuccessRes(res, order, 200);
   } catch (error) {
     next(error);
   }
 });
 
-// Tạo đơn hàng mới
+// Tạo đơn hàng mới (không cần nhập voucher hay discount)
 router.post('/', check_authentication, async (req, res, next) => {
   try {
     const body = req.body;
@@ -51,8 +47,7 @@ router.post('/', check_authentication, async (req, res, next) => {
     const products = body.products;
 
     const totalPrice = products.reduce((total, item) => total + item.quantity * item.price, 0);
-    const discount = body.discount || 0;
-    const finalPrice = totalPrice - discount; // Tính giá cuối sau khi áp dụng giảm giá
+    const finalPrice = totalPrice; // Không áp dụng giảm giá
 
     const newOrder = new orderModel({
       userId,
@@ -76,7 +71,7 @@ router.post('/', check_authentication, async (req, res, next) => {
 
     await OrderDetail.insertMany(orderDetails);
 
-    if (req.get('User-Agent') && req.get('User-Agent').includes('Mozilla')) {
+    if (req.get('User-Agent')?.includes('Mozilla')) {
       return res.redirect(`/Orders/user/${userId}/view/all`);
     } else {
       return res.status(200).json({ message: 'Đơn hàng đã được tạo thành công', order: newOrder });
@@ -86,16 +81,11 @@ router.post('/', check_authentication, async (req, res, next) => {
   }
 });
 
-// Chỉnh sửa đơn hàng (hiển thị dưới dạng trang)
+// Trang chỉnh sửa đơn hàng
 router.get('/edit/:id', check_authentication, async (req, res, next) => {
   try {
-    const order = await orderModel.findOne({
-      _id: req.params.id,
-      isDeleted: false
-    });
-
+    const order = await orderModel.findOne({ _id: req.params.id, isDeleted: false });
     if (!order) return res.status(404).send('Không tìm thấy đơn hàng');
-
     res.render('Orders/editOrder', { order });
   } catch (error) {
     next(error);
@@ -119,7 +109,7 @@ router.put('/:id', check_authentication, async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng' });
     }
 
-    if (req.get('User-Agent') && req.get('User-Agent').includes('Mozilla')) {
+    if (req.get('User-Agent')?.includes('Mozilla')) {
       return res.redirect(`/Orders/view/all`);
     } else {
       CreateSuccessRes(res, updatedOrder, 200);
@@ -129,7 +119,7 @@ router.put('/:id', check_authentication, async (req, res, next) => {
   }
 });
 
-// Xóa (soft delete) đơn hàng
+// Xóa đơn hàng (soft delete)
 router.delete('/:id', check_authentication, async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -139,7 +129,7 @@ router.delete('/:id', check_authentication, async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng' });
     }
 
-    if (req.get('User-Agent') && req.get('User-Agent').includes('Mozilla')) {
+    if (req.get('User-Agent')?.includes('Mozilla')) {
       return res.redirect(`/Orders/view/all`);
     } else {
       return res.status(200).json({ message: 'Đơn hàng đã được xóa thành công', order: deletedOrder });
@@ -155,7 +145,7 @@ router.get('/:id/detail', check_authentication, async (req, res) => {
   const order = await orderModel.findById(orderId).populate('userId');
   const orderDetails = await OrderDetail.find({ orderId: new mongoose.Types.ObjectId(orderId) }).populate('productId');
 
-  if (req.get('User-Agent') && req.get('User-Agent').includes('Mozilla')) {
+  if (req.get('User-Agent')?.includes('Mozilla')) {
     return res.render('Orders/orderDetail', { order, orderDetails });
   } else {
     CreateSuccessRes(res, orderDetails, 200);

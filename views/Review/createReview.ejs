@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tạo Review</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #e9f0f5;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: block;
+      margin: auto;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+    <%- include('../partials/header') %>
+  <div class="form-container">
+    <h2>Tạo Review mới</h2>
+    <form action="/reviews" method="POST">
+    <input type="hidden" name="user_id" value="<%= userId %>">
+    <input type="hidden" name="product_id" value="<%= productId %>">
+
+      <label>Comment:</label>
+      <textarea name="comment" rows="4" required></textarea>
+
+      <button type="submit">Tạo Review</button>
+    </form>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

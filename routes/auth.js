@@ -7,7 +7,10 @@ let constants = require('../utils/constants')
 let { check_authentication } = require('../utils/check_auth')
 let { validate, validatorLogin, validatorForgotPassword, validatorChangePassword } = require('../utils/validators')
 let crypto = require('crypto')
+let isBrowserRequest = require('../utils/checkBrowser')
 let {sendmail} = require('../utils/sendmail')
+let multer = require('multer')
+
 
 /* GET home page. */
 router.get('/login', (req, res) => {
@@ -27,57 +30,58 @@ router.get('/logout', (req, res) => {
 
 router.post('/login', async function (req, res, next) {
     try {
-        let body = req.body;
-        let username = body.username;
-        let password = body.password;
-        let userID = await userController.CheckLogin(username, password);
-        let user = await userController.GetUserByID(userID);
-
-        req.session.user = user;
-
-        const token = jwt.sign({
-            id: userID,
-            expire: (new Date(Date.now() + 60 * 60 * 1000)).getTime()
-        }, constants.SECRET_KEY);
-
-        // Nếu là từ trình duyệt (form đăng nhập)
-        if (req.headers.accept && req.headers.accept.includes('text/html')) {
-            // lưu token vào cookie nếu cần
-            res.cookie('token', token);
-            return res.redirect('/products/view/all');
+      const { username, password } = req.body;
+      const userID = await userController.CheckLogin(username, password);
+      const user = await userController.GetUserByID(userID);
+  
+      req.session.user = user;   
+      if (isBrowserRequest(req)) {
+        return res.redirect('/products/view/all');
+      }
+      res.status(200).json({
+        success: true,
+        message: 'Đăng nhập thành công',
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email
         }
-
-        // Nếu là từ API (Postman)
-        CreateSuccessRes(res, token, 200);
-
+      });
     } catch (error) {
-        next(error);
+      return res.render('Auth/login', { error: error.message || "Đăng nhập thất bại" });
     }
-});
-
-
-router.post('/signup', validatorLogin, validate, async function (req, res, next) {
+  });
+  
+  
+  router.post('/signup', validatorLogin, validate, async function (req, res, next) {
     try {
-        let body = req.body;
-        let newUser = await userController.CreateAnUser(
-            body.username, body.password, body.email, 'user'
-        );
-
-        // Nếu là từ trình duyệt (form), redirect về login
-        if (req.headers.accept && req.headers.accept.includes('text/html')) {
-            return res.redirect('/auth/login');
+      const body = req.body;
+      const newUser = await userController.CreateAnUser(
+        body.username, body.password, body.email, 'user'
+      );
+      req.session.user = newUser;
+  
+      if (isBrowserRequest(req)) {
+        return res.redirect('/products/view/all');
+      }
+  
+      res.status(201).json({
+        success: true,
+        message: "Đăng ký thành công",
+        user: {
+          id: newUser._id,
+          username: newUser.username,
+          email: newUser.email
         }
-
-        // Nếu là từ Postman hoặc fetch API, trả JSON
-        return CreateSuccessRes(res, jwt.sign({
-            id: newUser._id,
-            expire: (new Date(Date.now() + 60 * 60 * 1000)).getTime()
-        }, constants.SECRET_KEY), 200);
-
+      });
     } catch (error) {
-        next(error);
+      return res.render('Auth/signup', { 
+        error: error.message || "Đăng ký thất bại",
+        username: req.body.username,
+        email: req.body.email
+      });
     }
-});
+  });
 
 
 router.get('/me', check_authentication, async function (req, res, next) {

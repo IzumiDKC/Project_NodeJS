@@ -238,6 +238,7 @@
           <th>Địa chỉ giao hàng</th>
           <th>Ghi chú</th>
           <th>Tổng tiền</th>
+          <th>Giá sau giảm</th>
           <th>Ngày tạo</th>
           <th>Hành động</th>
         </tr>
@@ -250,6 +251,7 @@
             <td><%= order.shippingAddress %></td>
             <td><%= order.notes || 'Không có' %></td>
             <td><%= order.totalPrice.toLocaleString() %> đ</td>
+            <td><%= order.finalPrice.toLocaleString() %> đ</td>
             <td><%= new Date(order.createdAt).toLocaleString() %></td>
             <td>
                 <a class="edit-btn" href="/Orders/edit/<%= order._id %>">Sửa</a>

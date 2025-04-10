@@ -6,9 +6,8 @@ let brandModel = require('../schemas/brands')
 let {CreateErrorRes,
   CreateSuccessRes} = require('../utils/responseHandler')
 const isBrowserRequest = require('../utils/checkBrowser'); 
-const check_auth = require('../utils/check_auth');
 
-router.use(check_auth.check_authentication);
+
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
   let products = await productModel.find({
@@ -73,7 +72,15 @@ router.get('/view/detail/:id', async function(req, res, next) {
         ? res.status(404).render('404')
         : CreateErrorRes(res, "Product not found", 404);
     }
+    const reviews = await Review.find({ product_id: product._id, isDeleted: false })
+    .populate('user_id', 'username')
+    .sort({ created_at: -1 });
 
+    res.render('Products/detailProduct', {
+      product,
+      reviews,
+      user: req.session.user
+    });
     if (isBrowserRequest(req)) {
       res.render('Products/detailProduct', { product });
     } else {
@@ -248,5 +255,6 @@ router.get('/:slugcategory/:slugbrand/:slugproduct', async (req, res, next) => {
       next(error);
   }
 });
+
 
 module.exports = router;

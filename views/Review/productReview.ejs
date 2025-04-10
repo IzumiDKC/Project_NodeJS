@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Review sản phẩm</title>
+
+<style>
+  .container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #fdfdfd;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .review-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .review-item {
+    background-color: #f5f5f5;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 5px solid #007bff;
+    border-radius: 4px;
+  }
+
+  .review-item strong {
+    color: #555;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn:hover {
+    background-color: #0056b3;
+  }
+
+  .mt-3 {
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<%- include('../partials/header') %>
+<div class="container">
+  <h2>Đánh giá sản phẩm</h2>
+
+  <a href="/reviews/create?productId=<%= productId %>&userId=<%= userId %>" class="btn mt-3">Thêm đánh giá</a>
+
+
+  <% if (reviews.length > 0) { %>
+    <ul class="review-list">
+      <% reviews.forEach(review => { %>
+        <li class="review-item">
+          <p><strong>Người dùng:</strong> <%= review.user_id?.username || 'Ẩn danh' %></p>
+          <p><strong>Bình luận:</strong> <%= review.comment %></p>
+          <p><strong>Ngày:</strong> <%= new Date(review.createdAt).toLocaleString() %></p>
+          <% if (review.user_id && String(review.user_id._id) === String(userId)) { %>
+            <form action="/reviews/edit/<%= review._id %>" method="GET" style="display:inline;">
+              <button type="submit">Sửa</button>
+            </form>
+            <form action="/reviews/<%= review._id %>?_method=DELETE" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xoá bình luận này không?');">
+                <button type="submit">Xoá</button>
+            </form>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+  <% } %>
+
+  <a href="/products/view/all" class="btn mt-3">Quay lại danh sách sản phẩm</a>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

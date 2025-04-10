@@ -137,6 +137,7 @@
             <button onclick="window.location.href='/products/view/edit/<%= product.id %>'">Sửa</button>
             <button onclick="deleteProduct('<%= product._id %>')">Xóa</button>
             <button onclick="window.location.href='/products/view/detail/<%= product.id %>'">Chi tiết</button>
+            <button onclick="window.location.href='/reviews/view/product/<%= product._id %>'">Xem đánh giá</button>
             <form action="/cart/add/<%= product._id %>" method="POST">
               <button type="submit">Thêm vào giỏ</button>
             </form>

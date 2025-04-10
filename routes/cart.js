@@ -6,7 +6,10 @@ const check_auth = require('../utils/check_auth');
 const Voucher = require('../schemas/voucher');
 const Order = require('../schemas/orders');
 const OrderDetail = require('../schemas/orderDetails');
-const {check_authentication} = require('../utils/check_auth');
+const mongoose = require('mongoose');
+const check_authentication = require('../utils/check_auth').check_authentication;
+
+
 
 router.use(check_auth.check_authentication);
 // Middleware kiểm tra User-Agent
@@ -14,13 +17,10 @@ function isBrowser(req) {
   return req.get('User-Agent')?.includes('Mozilla');
 }
 
-// CREATE - Thêm sản phẩm vào giỏ
 router.post('/add/:productId', async (req, res) => {
   try {
     const userId = req.user._id;
     const productId = req.params.productId;
-
-
     let cart = await Cart.findOne({ user: userId });
 
     if (!cart) {
@@ -28,7 +28,6 @@ router.post('/add/:productId', async (req, res) => {
     }
 
     const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
-
     if (itemIndex > -1) {
       cart.items[itemIndex].quantity += 1;
     } else {
@@ -36,7 +35,6 @@ router.post('/add/:productId', async (req, res) => {
     }
 
     await cart.save();
-
     if (isBrowser(req)) {
       res.redirect('/products/view/all');
     } else {
@@ -56,7 +54,7 @@ router.post('/add/:productId', async (req, res) => {
 
 router.get('/view', async (req, res) => {
   try {
-    const userId = req.session.user._id;
+    const userId = req.user._id;
     const cart = await Cart.findOne({ user: userId }).populate('items.product');
     const cartItems = cart?.items || [];
 
@@ -105,7 +103,7 @@ router.get('/view', async (req, res) => {
 // UPDATE - Cập nhật số lượng sản phẩm trong giỏ
 router.put('/update/:productId', async (req, res) => {
   try {
-    const userId = req.session.user._id;
+    const userId = req.user._id;
     const productId = req.params.productId;
     const { quantity } = req.body;
 
@@ -130,7 +128,7 @@ router.put('/update/:productId', async (req, res) => {
 // DELETE - Xoá 1 sản phẩm khỏi giỏ
 router.delete('/remove/:productId', async (req, res) => {
   try {
-    const userId = req.session.user._id;
+    const userId = req.user._id;
     const productId = req.params.productId;
 
     const cart = await Cart.findOne({ user: userId });
@@ -190,8 +188,9 @@ router.get('/checkout', check_authentication, async (req, res, next) => {
     let finalPrice = totalPrice;
     let voucher = null;
 
-    if (req.query.voucherCode) {
-      voucher = await Voucher.findOne({ code: req.query.voucherCode, isDeleted: false });
+    // Lấy mã voucher từ session (không nhập từ form nữa)
+    if (req.session.voucher) {
+      voucher = await Voucher.findById(req.session.voucher._id);
       if (voucher && voucher.discount) {
         discount = voucher.discount;
         finalPrice = totalPrice * (1 - discount / 100);
@@ -212,35 +211,35 @@ router.get('/checkout', check_authentication, async (req, res, next) => {
 });
 
 
+
 router.post('/checkout', check_authentication, async (req, res, next) => {
   try {
-    const { shippingAddress, notes, voucherCode } = req.body;
+    const { shippingAddress, notes } = req.body;
     const userId = req.session.user._id;
     const cart = await Cart.findOne({ user: userId }).populate('items.product');
     if (!cart || !cart.items || cart.items.length === 0) {
       return res.status(400).json({ message: 'Giỏ hàng trống' });
     }
-    
+
     const products = cart.items.map(item => ({
       productId: item.product._id,
       quantity: item.quantity,
       price: item.product.price
-    }));    
+    }));
 
-    const totalPrice = products.reduce((total, item) => {
-      return total + item.quantity * item.price;
-    }, 0);
+    const totalPrice = products.reduce((total, item) => total + item.quantity * item.price, 0);
 
     let discount = 0;
-    if (voucherCode) {
-      const voucher = await Voucher.findOne({ code: voucherCode, isDeleted: false });
+    let finalPrice = totalPrice;
+    let voucher = null;
+
+    if (req.session.voucher) {
+      voucher = await Voucher.findById(req.session.voucher._id);
       if (voucher && voucher.discount) {
-        discount = voucher.discount; 
+        discount = voucher.discount;
+        finalPrice = totalPrice * (1 - discount / 100);
       }
     }
-
-    const finalPrice = totalPrice * (1 - discount / 100);
-
 
     const newOrder = new Order({
       userId,
@@ -263,27 +262,23 @@ router.post('/checkout', check_authentication, async (req, res, next) => {
     }));
     await OrderDetail.insertMany(orderDetails);
 
-    await Cart.findOneAndDelete({ userId });
+    await Cart.findOneAndDelete({ user: userId });
+    delete req.session.voucher; // Xoá voucher sau khi thanh toán
 
-    const userAgent = req.headers['user-agent'] || '';
-    const isBrowser = userAgent.includes('Mozilla') || userAgent.includes('Chrome') || userAgent.includes('Safari');
-
+    const isBrowser = (req.headers['user-agent'] || '').includes('Mozilla');
     if (isBrowser) {
       return res.redirect('/Cart/success');
     } else {
       return res.status(200).json({ message: 'Checkout thành công', order: savedOrder });
     }
 
-
   } catch (error) {
     next(error);
   }
 });
 
+
 router.get('/success', (req, res) => {
   res.render('Cart/success');
 });
-
-
-
 module.exports = router;

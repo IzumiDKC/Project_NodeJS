@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Danh sách Review</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f6f6f6;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+    }
+    a {
+      margin-right: 10px;
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    form {
+      display: inline;
+    }
+    .btn {
+      padding: 5px 10px;
+      border: none;
+      background: crimson;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: darkred;
+    }
+    .create-btn {
+      display: block;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background: #28a745;
+      color: white;
+      text-align: center;
+      width: fit-content;
+      border-radius: 6px;
+    }
+    .create-btn:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+    <%- include('../partials/header') %>
+  <div class="container">
+    <h2>Danh sách Review</h2>
+    <ul>
+      <% reviews.forEach(r => { %>
+        <li>
+            <strong>User:</strong> <%= r.user_id._id %> - <%= r.user_id.username %><br/>
+            <strong>Product:</strong> <%= r.product_id.name %><br/>
+            <strong>Comment:</strong> <%= r.comment %><br/>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>
