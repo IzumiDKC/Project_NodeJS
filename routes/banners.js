@@ -69,14 +69,21 @@ router.get('/view/edit/:id', async (req, res, next) => {
 
 
 router.get('/view/detail/:id', async (req, res, next) => {
-    try {
-      const banner = await bannerController.GetBannerById(req.params.id);
-      if (!banner) return CreateErrorRes(res, "Banner không tồn tại", 404);
+  try {
+    const banner = await bannerController.GetBannerById(req.params.id);
+
+    if (!banner) return CreateErrorRes(res, "Banner không tồn tại", 404);
+
+    if (isBrowserRequest(req)) {
       res.render('Banners/detailBanner', { banner });
-    } catch (err) {
-      next(err);
+    } else {
+      CreateSuccessRes(res, banner, 200);
     }
-  });
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 router.post('/view/edit/:id', async (req, res, next) => {
   try {
@@ -108,6 +115,19 @@ router.get('/view/delete/:id', async (req, res, next) => {
   }
 });
 
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const deletedBanner = await bannerController.DeleteBanner(req.params.id);
+
+    if (!deletedBanner) {
+      return CreateErrorRes(res, 'Banner không tồn tại', 404);
+    }
+
+    CreateSuccessRes(res, deletedBanner, 200);
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.put('/view/edit/:id', upload.single('imageFile'), async function(req, res, next) {
     try {
