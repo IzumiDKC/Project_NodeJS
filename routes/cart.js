@@ -4,7 +4,9 @@ const Cart = require('../schemas/cart');
 const Product = require('../schemas/products');
 const check_auth = require('../utils/check_auth');
 const Voucher = require('../schemas/voucher');
-
+const Order = require('../schemas/orders');
+const OrderDetail = require('../schemas/orderDetails');
+const {check_authentication} = require('../utils/check_auth');
 
 router.use(check_auth.check_authentication);
 // Middleware kiểm tra User-Agent
@@ -166,6 +168,122 @@ router.post('/voucher/apply', async (req, res) => {
   req.session.voucher = { _id: voucher._id };  // Chỉ lưu _id vào session
   res.redirect('/cart/view');
 });
+
+router.get('/checkout', check_authentication, async (req, res, next) => {
+  try {
+    const userId = req.session.user._id;
+    const cart = await Cart.findOne({ user: userId }).populate('items.product');
+
+    if (!cart || cart.items.length === 0) {
+      return res.redirect('/cart/view'); 
+    }
+
+    const products = cart.items.map(item => ({
+      name: item.product.name,
+      price: item.product.price,
+      quantity: item.quantity
+    }));
+
+    const totalPrice = products.reduce((total, item) => total + item.price * item.quantity, 0);
+
+    let discount = 0;
+    let finalPrice = totalPrice;
+    let voucher = null;
+
+    if (req.query.voucherCode) {
+      voucher = await Voucher.findOne({ code: req.query.voucherCode, isDeleted: false });
+      if (voucher && voucher.discount) {
+        discount = voucher.discount;
+        finalPrice = totalPrice * (1 - discount / 100);
+      }
+    }
+
+    res.render('Cart/checkout', {
+      products,
+      totalPrice,
+      discount,
+      finalPrice,
+      voucher
+    });
+
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+router.post('/checkout', check_authentication, async (req, res, next) => {
+  try {
+    const { shippingAddress, notes, voucherCode } = req.body;
+    const userId = req.session.user._id;
+    const cart = await Cart.findOne({ user: userId }).populate('items.product');
+    if (!cart || !cart.items || cart.items.length === 0) {
+      return res.status(400).json({ message: 'Giỏ hàng trống' });
+    }
+    
+    const products = cart.items.map(item => ({
+      productId: item.product._id,
+      quantity: item.quantity,
+      price: item.product.price
+    }));    
+
+    const totalPrice = products.reduce((total, item) => {
+      return total + item.quantity * item.price;
+    }, 0);
+
+    let discount = 0;
+    if (voucherCode) {
+      const voucher = await Voucher.findOne({ code: voucherCode, isDeleted: false });
+      if (voucher && voucher.discount) {
+        discount = voucher.discount; 
+      }
+    }
+
+    const finalPrice = totalPrice * (1 - discount / 100);
+
+
+    const newOrder = new Order({
+      userId,
+      products,
+      totalPrice,
+      discount,
+      finalPrice,
+      shippingAddress,
+      notes,
+      isDeleted: false
+    });
+
+    const savedOrder = await newOrder.save();
+
+    const orderDetails = products.map(p => ({
+      orderId: savedOrder._id,
+      productId: p.productId,
+      quantity: p.quantity,
+      price: p.price
+    }));
+    await OrderDetail.insertMany(orderDetails);
+
+    await Cart.findOneAndDelete({ userId });
+
+    const userAgent = req.headers['user-agent'] || '';
+    const isBrowser = userAgent.includes('Mozilla') || userAgent.includes('Chrome') || userAgent.includes('Safari');
+
+    if (isBrowser) {
+      return res.redirect('/Cart/success');
+    } else {
+      return res.status(200).json({ message: 'Checkout thành công', order: savedOrder });
+    }
+
+
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/success', (req, res) => {
+  res.render('Cart/success');
+});
+
 
 
 module.exports = router;

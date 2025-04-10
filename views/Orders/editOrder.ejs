@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chỉnh sửa đơn hàng</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f0ff;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .edit-container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #6C63FF;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #6C63FF;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #5851d8;
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <div class="edit-container">
+    <h1>Chỉnh sửa đơn hàng</h1>
+    <form action="/Orders/<%= order._id %>?_method=PUT" method="POST">
+      <label>Địa chỉ giao hàng:</label>
+      <input type="text" name="shippingAddress" value="<%= order.shippingAddress %>" required>
+
+      <label>Ghi chú:</label>
+      <textarea name="notes" rows="4"><%= order.notes %></textarea>
+
+      <label>Trạng thái:</label>
+      <select name="status">
+        <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Chờ xử lý</option>
+        <option value="Processing" <%= order.status === 'Processing' ? 'selected' : '' %>>Đang xử lý</option>
+        <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Đã giao</option>
+        <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Đã hủy</option>
+      </select>
+
+      <button type="submit">Lưu thay đổi</button>
+    </form>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

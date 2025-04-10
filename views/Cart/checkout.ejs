@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thanh toán</title>
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 20px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    color: #4CAF50;
+    margin-bottom: 20px;
+  }
+
+  h2, h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    background-color: #fff;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-top: 10px;
+    display: inline-block;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  </style>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  <h1>Thanh toán đơn hàng</h1>
+
+  <h2>Danh sách sản phẩm</h2>
+  <table border="1" cellpadding="10">
+    <thead>
+      <tr>
+        <th>Tên sản phẩm</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Thành tiền</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% products.forEach(product => { %>
+        <tr>
+          <td><%= product.name %></td>
+          <td><%= product.price.toLocaleString() %> đ</td>
+          <td><%= product.quantity %></td>
+          <td><%= (product.price * product.quantity).toLocaleString() %> đ</td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <h3>Tổng tiền: <%= totalPrice.toLocaleString() %> đ</h3>
+  <% if (discount > 0) { %>
+    <h3>Giảm giá: <%= discount %>%</h3>
+    <h3>Thành tiền sau giảm: <%= finalPrice.toLocaleString() %> đ</h3>
+  <% } else { %>
+    <h3>Thành tiền: <%= totalPrice.toLocaleString() %> đ</h3>
+  <% } %>
+
+  <form action="/cart/checkout" method="POST">
+    <div>
+      <label for="shippingAddress">Địa chỉ giao hàng:</label><br>
+      <input type="text" name="shippingAddress" id="shippingAddress" required>
+    </div>
+
+    <div>
+      <label for="notes">Ghi chú (nếu có):</label><br>
+      <textarea name="notes" id="notes" rows="3"></textarea>
+    </div>
+
+    <div>
+      <label for="voucherCode">Mã giảm giá:</label><br>
+      <input type="text" name="voucherCode" id="voucherCode" value="<%= voucher ? voucher.code : '' %>">
+    </div>
+
+    <button type="submit">Xác nhận đặt hàng</button>
+  </form>
+
+  <p><a href="/cart/view">← Quay lại giỏ hàng</a></p>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

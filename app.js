@@ -13,6 +13,8 @@ const menuRouter = require('./routes/menu');
 const cartRoutes = require('./routes/cart');
 const voucherRoute = require('./routes/voucher');
 const bannerRoutes = require('./routes/banners');
+const orderRoutes = require('./routes/orders');
+
 
 var app = express();
 app.use(express.static('public'));
@@ -70,7 +72,7 @@ app.use('/cart', require('./routes/cart'));
 app.use('/brands', require('./routes/brands'));
 app.use('/voucher', voucherRoute);
 app.use('/banners', bannerRoutes);
-
+app.use('/orders', require('./routes/orders'));
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

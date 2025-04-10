@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chi tiết đơn hàng</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      margin-bottom: 20px;
+    }
+
+    table th, table td {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    table th {
+      background-color: #f0f0f0;
+      font-weight: bold;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 10px;
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+    
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <div class="container">
+    <h1>Chi tiết đơn hàng</h1>
+    <p>📍 <strong>Địa chỉ:</strong> <%= order.shippingAddress %></p>
+    <p>📝 <strong>Ghi chú:</strong> <%= order.notes %></p>
+    <p>💰 <strong>Tổng tiền:</strong> <%= order.totalPrice.toLocaleString() %> đ</p>
+
+    <h2>🛍 Sản phẩm trong đơn hàng</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Tên sản phẩm</th>
+          <th>Giá</th>
+          <th>Số lượng</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% orderDetails.forEach(detail => { %>
+          <tr>
+            <td><%= detail.productId.name %></td>
+            <td><%= detail.price.toLocaleString() %> đ</td>
+            <td><%= detail.quantity %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <a href="/Orders/view/all">← Quay lại danh sách đơn hàng</a>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>
