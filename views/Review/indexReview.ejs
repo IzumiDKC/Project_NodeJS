@@ -72,10 +72,11 @@
     <ul>
       <% reviews.forEach(r => { %>
         <li>
-            <strong>User:</strong> <%= r.user_id._id %> - <%= r.user_id.username %><br/>
-            <strong>Product:</strong> <%= r.product_id.name %><br/>
-            <strong>Comment:</strong> <%= r.comment %><br/>
-        </li>
+          <strong>User:</strong> <%= r.user_id._id %> - <%= r.user_id.username %><br/>
+          <strong>Product:</strong> <%= r.product_id.name %><br/>
+          <strong>Comment:</strong> <%= r.comment %><br/>
+      </li>
+      
       <% }) %>
     </ul>
   </div>

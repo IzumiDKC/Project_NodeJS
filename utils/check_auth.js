@@ -6,12 +6,11 @@ module.exports = {
     check_authentication: async function (req, res, next) {
       try {
         if (!req.session.user) {
-          return res.status(401).json({ message: "Bạn chưa đăng nhập" });
-        }
-  
-        const user = await userController.GetUserByID(req.session.user._id);
-        if (!user) {
-          return res.status(401).json({ message: "Người dùng không tồn tại" });
+          if (req.accepts('html')) {
+            return res.status(401).render('errors/401', { message: "Bạn chưa đăng nhập" });
+          } else {
+            return res.status(401).json({ message: "Bạn chưa đăng nhập" });
+          }
         }
   
         req.user = user; 

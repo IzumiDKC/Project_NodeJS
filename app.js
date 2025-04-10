@@ -23,6 +23,7 @@ app.use(express.static('public'));
 const cors = require('cors'); 
 app.use(cors({ origin: "http://localhost:3000" }));
 
+
 app.use(session({
   secret: 'secret-key',
   resave: false,

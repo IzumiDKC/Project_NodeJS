@@ -198,9 +198,13 @@
   <form action="/voucher" method="POST">
     <div class="form-group">
       <label for="code">Mã Voucher:</label>
-      <input type="text" id="code" name="code" required>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="code" name="code" required style="flex: 1;">
+        <button type="button" onclick="generateVoucherCode()" class="btn btn-back" style="padding: 12px 20px;">Tạo ngẫu nhiên</button>
+      </div>
       <p class="input-hint">Ví dụ: SALE20, HOTSALE50 (không dấu, viết hoa)</p>
     </div>
+    
 
     <div class="form-row">
       <div class="form-col">
@@ -246,3 +250,13 @@
   <%- include('../partials/footer') %>
 </body>
 </html>
+<script>
+  function generateVoucherCode() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 10; i++) {
+      code += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    document.getElementById('code').value = code;
+  }
+</script>

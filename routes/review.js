@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const reviewModel = require('../schemas/review'); // model mongoose cho review
+const reviewModel = require('../schemas/review'); 
 const { CreateErrorRes, CreateSuccessRes } = require('../utils/responseHandler');
+const isBrowserRequest = require('../utils/checkBrowser'); 
 
 
 
@@ -48,25 +49,33 @@ router.get('/product/:productId', async (req, res, next) => {
     }
   });
 
-router.get('/view/all', async (req, res, next) => {
-  try {
-    let reviews = await reviewModel.find({ isDeleted: false })
-      .populate('user_id', 'username')
-      .populate('product_id', 'name');
-    res.render('Review/indexReview', { reviews });
-  } catch (error) {
-    next(error);
-  }
-});
+  router.get('/view/all', async (req, res, next) => {
+    try {
+      const reviews = await reviewModel.find({ isDeleted: false })
+        .populate('user_id', 'username')
+        .populate('product_id', 'name');
+        
+      if (isBrowserRequest(req)) {
+        res.render('Review/indexReview', { reviews });
+      } else {
+        res.status(200).json({
+          success: true,
+          message: 'Lấy danh sách review thành công',
+          data: reviews
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
 
 router.get('/create', (req, res) => {
-    const userId = req.session.user?._id; // hoặc từ token nếu bạn dùng JWT
+    const userId = req.session.user?._id; 
     const productId = req.query.productId;
   
     if (!userId || !productId) {
       return res.status(400).send('Thiếu userId hoặc productId');
     }
-  
     res.render('Review/createReview', { userId, productId });
   });
   
