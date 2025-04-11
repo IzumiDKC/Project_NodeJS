@@ -10,7 +10,6 @@ const mongoose = require('mongoose');
 const check_authentication = require('../utils/check_auth').check_authentication;
 
 
-
 router.use(check_auth.check_authentication);
 // Middleware kiểm tra User-Agent
 function isBrowser(req) {
@@ -26,14 +25,12 @@ router.post('/add/:productId', async (req, res) => {
     if (!cart) {
       cart = new Cart({ user: userId, items: [] });
     }
-
     const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
     if (itemIndex > -1) {
       cart.items[itemIndex].quantity += 1;
     } else {
       cart.items.push({ product: productId, quantity: 1 });
     }
-
     await cart.save();
     if (isBrowser(req)) {
       res.redirect('/products/view/all');
@@ -99,8 +96,6 @@ router.get('/view', async (req, res) => {
   }
 });
 
-
-// UPDATE - Cập nhật số lượng sản phẩm trong giỏ
 router.put('/update/:productId', async (req, res) => {
   try {
     const userId = req.user._id;
@@ -125,7 +120,6 @@ router.put('/update/:productId', async (req, res) => {
   }
 });
 
-// DELETE - Xoá 1 sản phẩm khỏi giỏ
 router.delete('/remove/:productId', async (req, res) => {
   try {
     const userId = req.user._id;
@@ -144,7 +138,6 @@ router.delete('/remove/:productId', async (req, res) => {
   }
 });
 
-// DELETE - Xoá toàn bộ giỏ hàng
 router.delete('/clear', async (req, res) => {
   try {
     const userId = req.session.user._id;
@@ -163,7 +156,7 @@ router.post('/voucher/apply', async (req, res) => {
     return res.redirect('/cart/view'); // Không có mã
   }
 
-  req.session.voucher = { _id: voucher._id };  // Chỉ lưu _id vào session
+  req.session.voucher = { _id: voucher._id };  
   res.redirect('/cart/view');
 });
 
@@ -188,7 +181,6 @@ router.get('/checkout', check_authentication, async (req, res, next) => {
     let finalPrice = totalPrice;
     let voucher = null;
 
-    // Lấy mã voucher từ session (không nhập từ form nữa)
     if (req.session.voucher) {
       voucher = await Voucher.findById(req.session.voucher._id);
       if (voucher && voucher.discount) {

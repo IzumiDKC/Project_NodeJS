@@ -24,13 +24,13 @@ router.get('/view/all', async function(req, res, next) {
       .populate('brand');
 
     if (isBrowserRequest(req)) {
-      res.render('Products/indexProducts', { products }); // Render cho trình duyệt
+      res.render('Products/indexProducts', { products }); 
     } else {
       res.status(200).json({
         success: true,
         message: 'Lấy danh sách sản phẩm thành công',
         data: products
-      }); // JSON cho Postman/API
+      }); 
     }
 
   } catch (error) {
@@ -123,7 +123,6 @@ router.get('/:id', async function(req, res, next) {
 
 
 
-// tương thích với form HTML gửi POST
 router.post('/:id', async (req, res, next) => {
   req.method = 'PUT';
   next();
@@ -135,25 +134,34 @@ router.put('/:id', async function(req, res, next) {
     let body = req.body;
     let updatedInfo = {};
 
-    if(body.name) updatedInfo.name = body.name;
-    if(body.price) updatedInfo.price = body.price;
-    if(body.quantity) updatedInfo.quantity = body.quantity;
-    if(body.category) updatedInfo.category = body.category;
-    if(body.brand) updatedInfo.brand = body.brand;
-    if(body.description) updatedInfo.description = body.description;
-    if(body.urlImg) updatedInfo.urlImg = body.urlImg;
+    if (body.name) updatedInfo.name = body.name;
+    if (body.price) updatedInfo.price = body.price;
+    if (body.quantity) updatedInfo.quantity = body.quantity;
+    if (body.category) updatedInfo.category = body.category;
+    if (body.brand) updatedInfo.brand = body.brand;
+    if (body.description) updatedInfo.description = body.description;
+    if (body.urlImg) updatedInfo.urlImg = body.urlImg;
 
     let updateProduct = await productModel.findByIdAndUpdate(
-      id, updatedInfo, { new: true }
+      id,
+      updatedInfo,
+      { new: true }
     );
-    CreateSuccessRes(res,updateProduct,200);
+    if (!updateProduct) {
+      return isBrowserRequest(req)
+        ? res.status(404).render('404')
+        : CreateErrorRes(res, "Product not found", 404);
+    }
+    if (isBrowserRequest(req)) {
+      return res.redirect('/products/view/all');
+    } else {
+      return CreateSuccessRes(res, updateProduct, 200);
+    }
+
   } catch (error) {
     next(error);
   }
 });
-
-
-// 
 
 router.post('/', async function(req, res, next) {
   try {
